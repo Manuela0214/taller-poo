@@ -7,9 +7,9 @@ public class DiaDeSol extends Alojamiento{
 
     List<Actividad> actividades;
 
-    public DiaDeSol(String nombre, double calificacion, double precioNoche, String ciudad, List<Actividad> actividades) {
+    public DiaDeSol(String nombre, double calificacion, double precioNoche, String ciudad) {
         super(nombre, calificacion, precioNoche, ciudad);
-        this.actividades = actividades;
+        this.actividades = new ArrayList<>();
     }
 
     @Override
@@ -23,5 +23,9 @@ public class DiaDeSol extends Alojamiento{
 
     public void setActividades(List<Actividad> actividades) {
         this.actividades = actividades;
+    }
+
+    public void agregarActividad(Actividad actividad) {
+        this.actividades.add(actividad);
     }
 }
