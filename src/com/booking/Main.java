@@ -2,8 +2,10 @@ package com.booking;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,14 +13,23 @@ public class Main {
         SistemaReservas sistema = new SistemaReservas();
 
         //Clientes
-        Persona cliente = new Persona(
+        Persona cliente1 = new Persona(
                 "Pepito",
                 "Perez",
                 "pepito@gmail.com",
                 "Colombiana",
                 "3102254622",
                 LocalTime.of(13,30),
-                LocalDate.of(2024, 12, 27)
+                LocalDate.of(1998, 1, 27)
+        );
+        Persona cliente2 = new Persona(
+                "Ana",
+                "Josefina",
+                "anita@gmail.com",
+                "Mexicana",
+                "3001457742",
+                LocalTime.of(12,0),
+                LocalDate.of(1976, 6, 15)
         );
 
         //Habitaciones
@@ -78,11 +89,6 @@ public class Main {
         Finca finca = new Finca("Finca la maria", 4.8, 120, "Medellin");
         DiaDeSol diaDeSol1 = new DiaDeSol("La rochela", 4.6, 50, "Manizales");
         DiaDeSol diaDeSol2 = new DiaDeSol("Santagueda", 4.3, 45, "Manizales");
-        sistema.agregarAlojamiento(hotel);
-        sistema.agregarAlojamiento(apartamento);
-        sistema.agregarAlojamiento(finca);
-        sistema.agregarAlojamiento(diaDeSol1);
-        sistema.agregarAlojamiento(diaDeSol2);
 
         //Creación de habitaciones y actividades
         hotel.agregarHabitacion(habitacion1);
@@ -102,6 +108,15 @@ public class Main {
         diaDeSol2.agregarActividad(actividades4);
         diaDeSol2.agregarActividad(actividades5);
 
+        //creación alojamientos en el sistema de reservas
+        sistema.agregarAlojamiento(hotel);
+        sistema.agregarAlojamiento(apartamento);
+        sistema.agregarAlojamiento(finca);
+        sistema.agregarAlojamiento(diaDeSol1);
+        sistema.agregarAlojamiento(diaDeSol2);
+
+
+
         //busqueda de alojamientos por parametro
         LocalDate fechaInicio = LocalDate.of(2024, 12, 27);
         LocalDate fechaFin = LocalDate.of(2024, 12, 29);
@@ -114,9 +129,15 @@ public class Main {
         //confirmacion caracteristicas de alojamientos
 //        sistema.confirmarHabitaciones("Finca la maria", fechaInicio, fechaFin, 2, 1, 1);
 
-        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente,habitacion1);
-        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente,habitacion1);
-        sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,2,cliente,habitacion3);
+        //reservas de alojamientos
+        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente1,habitacion1);
+        sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,1,cliente2,habitacion5);
+//        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente,habitacion1);
+//        sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,2,cliente,habitacion3);
 
+        sistema.getReservasActuales();
+        //Cambiar alojamiento
+        sistema.cambiarAlojamiento(LocalDate.of(2024,9,15), LocalDate.of(2024,9,27),cliente1,habitacion1);
+        sistema.getReservasActuales();
     }
 }

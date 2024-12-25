@@ -71,4 +71,16 @@ public class Habitacion {
             this.estadoDisponibilidad = true;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Habitacion{" +
+                "nombre='" + nombre + '\'' +
+                ", caracteristicas='" + caracteristicas + '\'' +
+                ", precioNoche=" + precioNoche +
+                ", cantidadDisponible=" + cantidadDisponible +
+                ", estadoDisponibilidad=" + estadoDisponibilidad +
+                ", capacidadMaxima=" + capacidadMaxima +
+                '}';
+    }
 }

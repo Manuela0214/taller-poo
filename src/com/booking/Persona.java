@@ -81,4 +81,16 @@ public class Persona {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    @Override
+    public String toString() {
+        return "Persona{" +
+                "nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", email='" + email + '\'' +
+                ", nacionalidad='" + nacionalidad + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", horaLlegada=" + horaLlegada +
+                ", fechaNacimiento=" + fechaNacimiento +
+                '}';
+    }
 }

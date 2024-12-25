@@ -63,4 +63,22 @@ public abstract class Alojamiento {
     public abstract String getTipo();
 
     public abstract boolean habitacionExiste(Habitacion habitacion);
+
+    @Override
+    public String toString() {
+        return "Alojamiento{" +
+                "nombre='" + nombre + '\'' +
+                ", calificacion=" + calificacion +
+                ", precioNoche=" + precioNoche +
+                ", ciudad='" + ciudad + '\'' +
+                ", habitaciones=" + habitaciones +
+                '}';
+    }
+
+    public Habitacion getHabitacionPorNombre(String nombre) {
+        return habitaciones.stream()
+                .filter(habitacion -> habitacion.getNombre().equalsIgnoreCase(nombre))
+                .findFirst()
+                .orElse(null);
+    }
 }

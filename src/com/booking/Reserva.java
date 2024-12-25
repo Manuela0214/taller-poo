@@ -57,4 +57,15 @@ public class Reserva {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    @Override
+    public String toString() {
+        return "Reserva{" +
+                "inicio=" + inicio +
+                ", fin=" + fin +
+                ", habitacion=" + habitacion +
+                ", cliente=" + cliente +
+                ", estado='" + estado + '\'' +
+                '}';
+    }
 }

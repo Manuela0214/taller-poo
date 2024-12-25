@@ -43,6 +43,6 @@ public class Finca extends Alojamiento{
     @Override
     public boolean habitacionExiste(Habitacion habitacion) {
         return this.habitaciones.stream()
-                .anyMatch(h -> h.getNombre().equals(habitacion.getNombre()));
+                .anyMatch(h -> h.getNombre().equalsIgnoreCase(habitacion.getNombre()));
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SistemaReservas {
 
@@ -112,18 +113,47 @@ public class SistemaReservas {
         return habitacionesDisponibles;
     }
 
-    public void realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdutos, int numNiños, Persona persona, Habitacion habitacion) {
+    public Reserva realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdutos, int numNiños, Persona persona, Habitacion habitacion) {
         if(alojamiento.habitacionExiste(habitacion) && verificarDisponibilidadFecha(habitacion, inicio, fin)){
             if(habitacion.getCantidadDisponible() <= 0){
                 System.out.println("No hay habitaciones disponibles de este tipo.");
             }
             Reserva nuevaReserva = new Reserva(inicio, fin, habitacion, persona);
             habitacion.setCantidadDisponible(habitacion.getCantidadDisponible() - 1);
+            habitacion.setEstadoDisponibilidad(false);
             reservas.add(nuevaReserva);
             System.out.println("Se ha realizado la reserva con éxito.");
+            return nuevaReserva;
         }else {
             System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
+            return null;
         }
+    }
+
+    public void actualizarReserva(){
+
+    }
+
+    public void cambiarHabitacion(){
+
+    }
+
+    public void cambiarAlojamiento(LocalDate inicio, LocalDate fin, Persona persona, Habitacion habitacion){
+        Reserva reservaActual = reservas.stream()
+                .filter(
+                        r -> r.getHabitacion().equals(habitacion) &&
+                                r.getCliente().equals(persona)
+                ).findFirst()
+                .orElse(null);
+        if (reservaActual == null) {
+            System.out.println("No tienes una reserva activa para cambiar.");
+            return;
+        }
+        reservas.remove(reservaActual);
+        Habitacion habitacionReservada = reservaActual.getHabitacion();
+        habitacionReservada.setCantidadDisponible(habitacion.getCantidadDisponible() + 1);
+        habitacionReservada.setEstadoDisponibilidad(true);
+        System.out.println("Se ha eliminado tu reserva actual. Procede a crear una nueva reserva.");
     }
 
     //métodos adicionales
@@ -154,4 +184,41 @@ public class SistemaReservas {
         }
         return true;
     }
+
+    public Alojamiento obtenerAlojamientoPorNombre(String nombreAlojamiento) {
+        Alojamiento alojamiento = alojamientos.stream()
+                .filter(a -> a.getNombre().equals(nombreAlojamiento))
+                .findFirst()
+                .orElse(null);
+        return alojamiento;
+    }
+
+    public List<Persona> getClientesRegistrados() {
+        return reservas.stream()
+                .map(Reserva::getCliente)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public Persona getClientePorNombre(String nombre) {
+        return reservas.stream()
+                .map(Reserva::getCliente)
+                .filter(cliente -> cliente.getNombre().equalsIgnoreCase(nombre))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void getReservasActuales(){
+        System.out.println("----------Reservas actuales----------");
+        for (Reserva reservas: this.getReservas()){
+            System.out.println("Cliente: " + reservas.getCliente().toString() +
+                    " - Habitación: "+reservas.getHabitacion().toString() +
+                    " - Llegada: " +  reservas.getInicio() +
+                    "- -Salida: " + reservas.getFin() +
+                    "- -Estado: " +reservas.getEstado()
+            );
+        }
+        System.out.println("-------------------------------------");
+    }
+
 }
