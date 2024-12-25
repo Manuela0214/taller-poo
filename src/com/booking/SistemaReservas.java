@@ -88,7 +88,29 @@ public class SistemaReservas {
         return alojamientosDisponibles;
     }
 
-
+    public List<Habitacion> confirmarHabitaciones(String nombreAlojamiento, LocalDate inicio, LocalDate fin, int numAdultos, int numNiños, int numHabitaciones){
+        List<Habitacion> habitacionesDisponibles = new ArrayList();
+        for(Alojamiento alojamiento : alojamientos){
+            if(alojamiento.getNombre().equalsIgnoreCase(nombreAlojamiento)){
+                for(Habitacion habitacion : alojamiento.getHabitaciones()){
+                    if(habitacion.getCantidadDisponible() >= numHabitaciones){
+                        if(verificarDisponibilidad(habitacion, inicio, fin)){
+                            habitacionesDisponibles.add(habitacion);
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("Habitaciones disponibles en " + nombreAlojamiento + ": ");
+        for (Habitacion habitacion : habitacionesDisponibles) {
+            System.out.println(
+                    habitacion.getNombre() +
+                    " - Características : " + habitacion.getCaracteristicas() +
+                    " - Precio por noche: " + habitacion.getPrecioNoche()
+            );
+        }
+        return habitacionesDisponibles;
+    }
 
     //métodos adicionales
 

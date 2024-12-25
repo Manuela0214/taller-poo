@@ -96,13 +96,17 @@ public class Main {
         diaDeSol2.agregarActividad(actividades4);
         diaDeSol2.agregarActividad(actividades5);
 
-        //
+        //busqueda de alojamientos por parametro
         LocalDate fechaInicio = LocalDate.of(2024, 12, 27);
         LocalDate fechaFin = LocalDate.of(2024, 12, 29);
-        sistema.buscarAlojamientos("Bogotá", "Hotel", fechaInicio, fechaFin, 2, 1, 2);
-        sistema.buscarAlojamientos("Manizales", "Dia de Sol", fechaInicio, fechaFin, 2, 1, 2);
-        sistema.buscarAlojamientos("Bogotá", "Apartamento", fechaInicio, fechaFin, 2, 1, 1);
-        sistema.buscarAlojamientos("Medellin", "Finca", fechaInicio, fechaFin, 2, 1, 1);
+
+//        sistema.buscarAlojamientos("Bogotá", "Hotel", fechaInicio, fechaFin, 2, 1, 2);
+//        sistema.buscarAlojamientos("Manizales", "Dia de Sol", fechaInicio, fechaFin, 2, 1, 2);
+//        sistema.buscarAlojamientos("Bogotá", "Apartamento", fechaInicio, fechaFin, 2, 1, 1);
+//        sistema.buscarAlojamientos("Medellin", "Finca", fechaInicio, fechaFin, 2, 1, 1);
+
+        //confirmacion caracteristicas de alojamientos
+        sistema.confirmarHabitaciones("Finca la maria", fechaInicio, fechaFin, 2, 1, 1);
 
     }
 }
