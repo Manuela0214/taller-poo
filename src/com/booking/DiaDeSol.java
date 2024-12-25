@@ -28,4 +28,9 @@ public class DiaDeSol extends Alojamiento{
     public void agregarActividad(Actividad actividad) {
         this.actividades.add(actividad);
     }
+
+    @Override
+    public boolean habitacionExiste(Habitacion habitacion) {
+        return false;
+    }
 }

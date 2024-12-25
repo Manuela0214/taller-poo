@@ -7,13 +7,15 @@ public class Reserva {
     private LocalDate inicio;
     private LocalDate fin;
     private Habitacion habitacion;
-    private Persona persona;
+    private Persona cliente;
+    private String estado;
 
-    public Reserva(LocalDate inicio, LocalDate fin, Habitacion habitacion, Persona persona) {
+    public Reserva(LocalDate inicio, LocalDate fin, Habitacion habitacion, Persona cliente) {
         this.inicio = inicio;
         this.fin = fin;
         this.habitacion = habitacion;
-        this.persona = persona;
+        this.cliente = cliente;
+        this.estado = "confirmada";
     }
 
     public LocalDate getInicio() {
@@ -40,15 +42,19 @@ public class Reserva {
         this.habitacion = habitacion;
     }
 
-    public Persona getPersona() {
-        return persona;
+    public Persona getCliente() {
+        return cliente;
     }
 
-    public void setPersona(Persona persona) {
-        this.persona = persona;
+    public void setCliente(Persona cliente) {
+        this.cliente = cliente;
     }
 
-    public boolean sobreponeFecha (LocalDate fechaInicio, LocalDate fechaFin) {
-        return (fechaInicio.isBefore(fin) && fechaFin.isAfter(inicio)) || fechaInicio.equals(inicio) || fechaFin.equals(fin);
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

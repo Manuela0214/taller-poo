@@ -35,4 +35,11 @@ public class Hotel extends Alojamiento {
     public String getTipo() {
         return "Hotel";
     }
+
+    @Override
+    public boolean habitacionExiste(Habitacion habitacion) {
+        return this.habitaciones.stream()
+                .anyMatch(h -> h.getNombre().equals(habitacion.getNombre()));
+    }
+
 }

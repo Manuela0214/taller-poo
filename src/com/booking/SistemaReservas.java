@@ -94,7 +94,7 @@ public class SistemaReservas {
             if(alojamiento.getNombre().equalsIgnoreCase(nombreAlojamiento)){
                 for(Habitacion habitacion : alojamiento.getHabitaciones()){
                     if(habitacion.getCantidadDisponible() >= numHabitaciones){
-                        if(verificarDisponibilidad(habitacion, inicio, fin)){
+                        if(verificarDisponibilidadFecha(habitacion, inicio, fin)){
                             habitacionesDisponibles.add(habitacion);
                         }
                     }
@@ -112,12 +112,26 @@ public class SistemaReservas {
         return habitacionesDisponibles;
     }
 
+    public void realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdutos, int numNiños, Persona persona, Habitacion habitacion) {
+        if(alojamiento.habitacionExiste(habitacion) && verificarDisponibilidadFecha(habitacion, inicio, fin)){
+            if(habitacion.getCantidadDisponible() <= 0){
+                System.out.println("No hay habitaciones disponibles de este tipo.");
+            }
+            Reserva nuevaReserva = new Reserva(inicio, fin, habitacion, persona);
+            habitacion.setCantidadDisponible(habitacion.getCantidadDisponible() - 1);
+            reservas.add(nuevaReserva);
+            System.out.println("Se ha realizado la reserva con éxito.");
+        }else {
+            System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
+        }
+    }
+
     //métodos adicionales
 
     private boolean verificarHabitacionesDisponibles(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numHabitaciones) {
         int totalHabitacionesDisponibles = 0;
         for (Habitacion habitacion : alojamiento.getHabitaciones()) {
-            if (habitacion.getCantidadDisponible() > 0 && verificarDisponibilidad(habitacion, inicio, fin)) {
+            if (habitacion.getCantidadDisponible() > 0 && verificarDisponibilidadFecha(habitacion, inicio, fin)) {
                 totalHabitacionesDisponibles += habitacion.getCantidadDisponible();
                 if (totalHabitacionesDisponibles >= numHabitaciones) {
                     return true;
@@ -127,11 +141,13 @@ public class SistemaReservas {
         return false;
     }
 
-    private boolean verificarDisponibilidad(Habitacion habitacion, LocalDate inicio, LocalDate fin) {
+    private boolean verificarDisponibilidadFecha(Habitacion habitacion, LocalDate inicio, LocalDate fin) {
         for(Reserva reserva : reservas){
             if(reserva.getHabitacion().equals(habitacion)){
                 if ((inicio.isBefore(reserva.getFin()) && inicio.isAfter(reserva.getInicio())) ||
-                        (fin.isBefore(reserva.getFin()) && fin.isAfter(reserva.getInicio()))) {
+                        (fin.isBefore(reserva.getFin()) && fin.isAfter(reserva.getInicio())) ||
+                        (inicio.isBefore(reserva.getInicio()) && fin.isAfter(reserva.getFin())) ||
+                        (inicio.equals(reserva.getInicio()) || fin.equals(reserva.getFin()))) {
                     return false;
                 }
             }

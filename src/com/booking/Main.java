@@ -26,36 +26,42 @@ public class Main {
                 "Habitación doble",
                 "2 camas dobles, Vista al mar, Aire acondicionado, Cafetera",
                 130,
-                5
+                5,
+                4
         );
         Habitacion habitacion2 = new Habitacion(
                 "Habitación Sencilla",
                 "1 cama sencilla, Escritorio, WiFi gratuito, Baño privado",
                 80,
-                6
+                6,
+                2
         );
         Habitacion habitacion3 = new Habitacion(
                 "Habitación Suite",
                 "Cama King, Jacuzzi, Vista panorámica, Minibar, TV de pantalla plana",
                 200,
-                3
+                3,
+                2
         );
         Habitacion habitacion4 = new Habitacion(
                 "Habitación Triple",
                 "3 camas individuales, Balcón privado, Aire acondicionado, TV, Mini nevera",
                 150,
-                5
+                5,
+                9
         );
         Habitacion habitacion5 = new Habitacion(
                 "Habitación Familiar",
                 "2 camas dobles, Sofá cama, Cocina completa, Baño privado, WiFi gratuito",
                 180,
-                6
+                6,
+                20
         );
         Habitacion habitacion6 = new Habitacion(
                 "Habitación Deluxe",
                 "Cama King, Jacuzzi privado, Terraza con vista al mar, Minibar, Smart TV",
                 250,
+                2,
                 2
         );
 
@@ -84,12 +90,12 @@ public class Main {
         hotel.agregarHabitacion(habitacion3);
         hotel.agregarHabitacion(habitacion4);
         hotel.agregarHabitacion(habitacion5);
-        hotel.agregarHabitacion(habitacion6);
         apartamento.agregarHabitacion(habitacion1);
         apartamento.agregarHabitacion(habitacion2);
         finca.agregarHabitacion(habitacion3);
         finca.agregarHabitacion(habitacion4);
         finca.agregarHabitacion(habitacion5);
+        finca.agregarHabitacion(habitacion6);
         diaDeSol1.agregarActividad(actividades1);
         diaDeSol1.agregarActividad(actividades2);
         diaDeSol1.agregarActividad(actividades3);
@@ -106,7 +112,11 @@ public class Main {
 //        sistema.buscarAlojamientos("Medellin", "Finca", fechaInicio, fechaFin, 2, 1, 1);
 
         //confirmacion caracteristicas de alojamientos
-        sistema.confirmarHabitaciones("Finca la maria", fechaInicio, fechaFin, 2, 1, 1);
+//        sistema.confirmarHabitaciones("Finca la maria", fechaInicio, fechaFin, 2, 1, 1);
+
+        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente,habitacion1);
+        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente,habitacion1);
+        sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,2,cliente,habitacion3);
 
     }
 }

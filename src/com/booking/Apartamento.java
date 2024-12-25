@@ -39,4 +39,10 @@ public class Apartamento extends Alojamiento{
     public String getTipo() {
         return "Apartamento";
     }
+
+    @Override
+    public boolean habitacionExiste(Habitacion habitacion) {
+        return this.habitaciones.stream()
+                .anyMatch(h -> h.getNombre().equals(habitacion.getNombre()));
+    }
 }

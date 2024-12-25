@@ -61,4 +61,6 @@ public abstract class Alojamiento {
     }
 
     public abstract String getTipo();
+
+    public abstract boolean habitacionExiste(Habitacion habitacion);
 }

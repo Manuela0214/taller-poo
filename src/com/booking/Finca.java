@@ -39,4 +39,10 @@ public class Finca extends Alojamiento{
     public String getTipo() {
         return "Finca";
     }
+
+    @Override
+    public boolean habitacionExiste(Habitacion habitacion) {
+        return this.habitaciones.stream()
+                .anyMatch(h -> h.getNombre().equals(habitacion.getNombre()));
+    }
 }
