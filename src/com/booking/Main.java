@@ -2,17 +2,13 @@ package com.booking;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
         SistemaReservas sistema = new SistemaReservas();
 
-        //Clientes
+        //----------------------------Clientes
         Persona cliente1 = new Persona(
                 "Pepito",
                 "Perez",
@@ -41,7 +37,7 @@ public class Main {
                 LocalDate.of(1980, 7, 14)
         );
 
-        //Habitaciones
+        //----------------------------Habitaciones
         Habitacion habitacion1 = new Habitacion(
                 "Habitación doble",
                 "2 camas dobles, Vista al mar, Aire acondicionado, Cafetera",
@@ -85,72 +81,117 @@ public class Main {
                 2
         );
 
-        //Actividades
+        //----------------------------Actividades
         Actividad actividades1 = new Actividad("Natación", true, 20);
         Actividad actividades2 = new Actividad("Paseo en bote", true, 25);
         Actividad actividades3 = new Actividad("Caminata", false, 15);
         Actividad actividades4 = new Actividad("Ciclo paseo", true, 10);
         Actividad actividades5 = new Actividad("Sendero ecológico", false, 30);
 
-        //Alojamientos
-        Hotel hotel = new Hotel("Hotel Paraiso", 4.2, 100, "Bogotá");
-        Apartamento apartamento = new Apartamento("Guaduales apartamentos",4.0, 80, "Bogotá");
-        Finca finca = new Finca("Finca la maria", 4.8, 120, "Medellin");
-        DiaDeSol diaDeSol1 = new DiaDeSol("La rochela", 4.6, 50, "Manizales");
-        DiaDeSol diaDeSol2 = new DiaDeSol("Santagueda", 4.3, 45, "Manizales");
+        //----------------------------Alojamientos
+        //Bogotá
+        Hotel hotel1B = new Hotel("Hotel Paraiso", 4.2, 100, "Bogota");
+        Hotel hotel2B = new Hotel("Hotel la Colina", 4.5, 110, "Bogota");
+        Hotel hotel3B = new Hotel("Hotel Guamal", 4.7, 114, "Bogota");
+        Apartamento apartamento1B = new Apartamento("Torres Niza", 4.8, 120, "Bogota");
+        Apartamento apartamento2B = new Apartamento("El Mirador", 4.1, 90, "Bogota");
+        //Medellin
+        Apartamento apartamento1M = new Apartamento("Guaduales apartamentos",4.0, 95, "Medellin");
+        Apartamento apartamento2M = new Apartamento("La Morada",4.3, 90, "Medellin");
+        Apartamento apartamento3M = new Apartamento("Edificio La Montañita",4.7, 80, "Medellin");
+        Finca finca1M = new Finca("Finca la maria", 4.8, 120, "Medellin");
+        //Pereira
+        DiaDeSol diaDeSol1P = new DiaDeSol("La Rochela", 4.6, 50, "Pereira");
+        DiaDeSol diaDeSol2P = new DiaDeSol("Santagueda", 4.3, 45, "Pereira");
+        Hotel hotel1P = new Hotel("Hotel la Estacion", 4.7, 114, "Pereira");
 
-        //Creación de habitaciones y actividades
-        hotel.agregarHabitacion(habitacion1);
-        hotel.agregarHabitacion(habitacion2);
-        hotel.agregarHabitacion(habitacion3);
-        hotel.agregarHabitacion(habitacion4);
-        hotel.agregarHabitacion(habitacion5);
-        apartamento.agregarHabitacion(habitacion1);
-        apartamento.agregarHabitacion(habitacion2);
-        finca.agregarHabitacion(habitacion3);
-        finca.agregarHabitacion(habitacion4);
-        finca.agregarHabitacion(habitacion5);
-        finca.agregarHabitacion(habitacion6);
-        diaDeSol1.agregarActividad(actividades1);
-        diaDeSol1.agregarActividad(actividades2);
-        diaDeSol1.agregarActividad(actividades3);
-        diaDeSol2.agregarActividad(actividades4);
-        diaDeSol2.agregarActividad(actividades5);
+        //----------------------------Creación de habitaciones y actividades
+        //Bogota
+        hotel1B.agregarHabitacion(habitacion1);
+        hotel1B.agregarHabitacion(habitacion2);
+        hotel1B.agregarHabitacion(habitacion3);
+        hotel1B.agregarHabitacion(habitacion6);
+        hotel2B.agregarHabitacion(habitacion4);
+        hotel2B.agregarHabitacion(habitacion5);
+        hotel2B.agregarHabitacion(habitacion1);
+        hotel3B.agregarHabitacion(habitacion2);
+        hotel3B.agregarHabitacion(habitacion3);
+        hotel3B.agregarHabitacion(habitacion4);
+        hotel3B.agregarHabitacion(habitacion5);
+        apartamento1B.agregarHabitacion(habitacion1);
+        apartamento1B.agregarHabitacion(habitacion2);
+        apartamento2B.agregarHabitacion(habitacion1);
+        apartamento2B.agregarHabitacion(habitacion2);
+        apartamento2B.agregarHabitacion(habitacion1);
+        //Medellin
+        apartamento1M.agregarHabitacion(habitacion1);
+        apartamento1M.agregarHabitacion(habitacion4);
+        apartamento1M.agregarHabitacion(habitacion2);
+        apartamento1M.agregarHabitacion(habitacion6);
+        apartamento2M.agregarHabitacion(habitacion1);
+        apartamento2M.agregarHabitacion(habitacion3);
+        apartamento2M.agregarHabitacion(habitacion4);
+        apartamento3M.agregarHabitacion(habitacion5);
+        apartamento3M.agregarHabitacion(habitacion6);
+        apartamento3M.agregarHabitacion(habitacion1);
+        apartamento3M.agregarHabitacion(habitacion3);
+        finca1M.agregarHabitacion(habitacion3);
+        finca1M.agregarHabitacion(habitacion4);
+        finca1M.agregarHabitacion(habitacion5);
+        //Pereira
+        diaDeSol1P.agregarActividad(actividades1);
+        diaDeSol1P.agregarActividad(actividades2);
+        diaDeSol1P.agregarActividad(actividades3);
+        diaDeSol2P.agregarActividad(actividades4);
+        diaDeSol2P.agregarActividad(actividades5);
+        hotel1P.agregarHabitacion(habitacion1);
 
-        //creación alojamientos en el sistema de reservas
-        sistema.agregarAlojamiento(hotel);
-        sistema.agregarAlojamiento(apartamento);
-        sistema.agregarAlojamiento(finca);
-        sistema.agregarAlojamiento(diaDeSol1);
-        sistema.agregarAlojamiento(diaDeSol2);
+        //----------------------------creación alojamientos en el sistema de reservas
+        //Bogota
+        sistema.agregarAlojamiento(hotel1B);
+        sistema.agregarAlojamiento(hotel2B);
+        sistema.agregarAlojamiento(hotel3B);
+        sistema.agregarAlojamiento(apartamento1B);
+        sistema.agregarAlojamiento(apartamento2B);
+        //Medellin
+        sistema.agregarAlojamiento(apartamento1M);
+        sistema.agregarAlojamiento(apartamento2M);
+        sistema.agregarAlojamiento(apartamento3M);
+        sistema.agregarAlojamiento(finca1M);
+        //Pereira
+        sistema.agregarAlojamiento(diaDeSol1P);
+        sistema.agregarAlojamiento(diaDeSol2P);
+        sistema.agregarAlojamiento(hotel1P);
 
-
-
-        //busqueda de alojamientos por parametro
+        //----------------------------busqueda de alojamientos por parametro
         LocalDate fechaInicio = LocalDate.of(2024, 12, 27);
         LocalDate fechaFin = LocalDate.of(2024, 12, 29);
-        LocalDate fechaInicio2 = LocalDate.of(2024, 9, 13);
-        LocalDate fechaFin2 = LocalDate.of(2024, 9, 18);
+        //fechas solapadas
+        LocalDate fechaInicioS = LocalDate.of(2024, 12, 26);
+        LocalDate fechaFinS = LocalDate.of(2024, 12, 28);
 
-//        sistema.buscarAlojamientos("Bogotá", "Hotel", fechaInicio, fechaFin, 2, 1, 2);
-//        sistema.buscarAlojamientos("Manizales", "Dia de Sol", fechaInicio, fechaFin, 2, 1, 2);
-//        sistema.buscarAlojamientos("Bogotá", "Apartamento", fechaInicio, fechaFin, 2, 1, 1);
+//        sistema.buscarAlojamientos("Bogota", "Hotel", fechaInicio, fechaFin, 2, 1, 2);
+//        sistema.buscarAlojamientos("Pereira", "Dia de Sol", fechaInicio, fechaFin, 2, 1, 2);
+//        sistema.buscarAlojamientos("Bogota", "Apartamento", fechaInicio, fechaFin, 2, 1, 1);
 //        sistema.buscarAlojamientos("Medellin", "Finca", fechaInicio, fechaFin, 2, 1, 1);
+//        sistema.buscarAlojamientos("Medellin", "Dia de Sol", fechaInicio, fechaFin, 2, 1, 1);   //alojamiento que no existe
 
         //confirmacion caracteristicas de alojamientos
-//        sistema.confirmarHabitaciones("Finca la maria", fechaInicio, fechaFin, 2, 1, 1);
+//        sistema.confirmarHabitaciones("Finca la maria", fechaInicio, fechaFin, 2, 0, 1);
 
         //reservas de alojamientos
-        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente1,habitacion1);
-        sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,1,cliente2,habitacion5);
-        sistema.realizarReserva(apartamento, fechaInicio, fechaFin, 3,1,cliente3,habitacion2);
-        sistema.realizarReserva(apartamento, fechaInicio2, fechaFin2, 3,1,cliente1,habitacion2);
+        sistema.realizarReserva(hotel1B, fechaInicio, fechaFin, 2,2,cliente1,habitacion1);
+        sistema.realizarReserva(finca1M, fechaInicio, fechaFin, 2,1,cliente2,habitacion5);
+        sistema.realizarReserva(apartamento1M, fechaInicio, fechaFin, 3,1,cliente3,habitacion2);
+        sistema.realizarReserva(apartamento1B, fechaInicio, fechaFin, 3,1,cliente1,habitacion1);
+        sistema.realizarReserva(apartamento1B, fechaInicioS, fechaFinS, 2,1,cliente2,habitacion1);  //fecha se solapa
+        sistema.realizarReserva(diaDeSol1P, fechaInicioS, fechaFinS, 2,1,cliente2,actividades1); //dia de sol
 
         sistema.getReservasActuales();
-
+//
         //actualizar reserva
         sistema.actualizarReserva("anita@gmail.com","1976-06-15");
-
+//
         sistema.getReservasActuales();
     }
 }

@@ -38,7 +38,7 @@ public class SistemaReservas {
 
         for (Alojamiento alojamiento : alojamientos) {
             if (alojamiento.getCiudad().equalsIgnoreCase(ciudad) && tipoAlojamiento.equals(alojamiento.getTipo())) {
-                if (verificarHabitacionesDisponibles(alojamiento, inicio, fin, numHabitaciones) && !(alojamiento instanceof DiaDeSol)) {
+                if (verificarHabitacionesDisponibles(alojamiento, inicio, fin, numHabitaciones,numAdultos,numNiños) && !(alojamiento instanceof DiaDeSol)) {
                     Habitacion habitacionMasEconomica = alojamiento.getHabitaciones()
                             .stream()
                             .min(Comparator.comparingDouble(Habitacion::getPrecioNoche))
@@ -66,7 +66,7 @@ public class SistemaReservas {
                     System.out.println(
                             alojamiento.getTipo() + ": " + alojamiento.getNombre() +
                                     ", Calificación: " + alojamiento.getCalificacion() +
-                                    ", Precio Base: " + alojamiento.getPrecioNoche() * diasEstadia * numHabitaciones +
+                                    ", Precio Base: " + habitacionMasEconomica.getPrecioNoche() * diasEstadia * numHabitaciones +
                                     ", Aumento: " + Math.round(aumento) +
                                     ", Descuento: " + Math.round(descuento) +
                                     ", Precio Total: " + Math.round(precioBase) + "\n"
@@ -87,6 +87,9 @@ public class SistemaReservas {
                 }
             }
         }
+        if(alojamientosDisponibles.isEmpty()){
+            System.out.println("No existe ese tipo de alojamiento en la ciudad especificada.");
+        }
         return alojamientosDisponibles;
     }
 
@@ -95,8 +98,8 @@ public class SistemaReservas {
         for(Alojamiento alojamiento : alojamientos){
             if(alojamiento.getNombre().equalsIgnoreCase(nombreAlojamiento)){
                 for(Habitacion habitacion : alojamiento.getHabitaciones()){
-                    if(habitacion.getCantidadDisponible() >= numHabitaciones){
-                        if(verificarDisponibilidadFecha(habitacion, inicio, fin)){
+                    if(habitacion.getCantidadDisponible() >= numHabitaciones && habitacion.getCapacidadMaxima() >= (numAdultos + numNiños)){
+                        if(verificarDisponibilidadFecha(alojamiento,habitacion, inicio, fin)){
                             habitacionesDisponibles.add(habitacion);
                         }
                     }
@@ -114,26 +117,42 @@ public class SistemaReservas {
         return habitacionesDisponibles;
     }
 
-    public Reserva realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdutos, int numNiños, Persona persona, Habitacion habitacion) {
-        if(alojamiento.habitacionExiste(habitacion) && verificarDisponibilidadFecha(habitacion, inicio, fin)){
-            if(habitacion.getCantidadDisponible() <= 0){
-                System.out.println("No hay habitaciones disponibles de este tipo.");
+    public void realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdultos, int numNiños, Persona persona, Habitacion habitacion) {
+        Reserva nuevaReserva = new Reserva(inicio,fin,habitacion,persona,alojamiento);
+        boolean reservada = false;
+        if (!alojamiento.habitacionExiste(habitacion)) {
+            System.out.println("El alojamiento no contiene la habitación seleccionada.");
+        }else{
+            for (Reserva reserva : reservas){
+                if (reserva.equals(nuevaReserva)){
+                    System.out.println("La habitacion ya se encuentra reservada en el alojamiento especificado.");
+                    reservada = true;
+                }
             }
-            Reserva nuevaReserva = new Reserva(inicio, fin, habitacion, persona, alojamiento);
-            habitacion.setCantidadDisponible(habitacion.getCantidadDisponible() - 1);
-            habitacion.setEstadoDisponibilidad(false);
-            reservas.add(nuevaReserva);
-            System.out.println("Se ha realizado la reserva con éxito.");
-            return nuevaReserva;
-        }else {
-            System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
-            return null;
+            if (!reservada && verificarDisponibilidadFecha(alojamiento,habitacion, inicio, fin)){
+                if(habitacion.getCantidadDisponible() <= 0){
+                    System.out.println("No hay habitaciones disponibles de este tipo.");
+                }
+                habitacion.setCantidadDisponible(habitacion.getCantidadDisponible() - 1);
+                //habitacion.setEstadoDisponibilidad(false);
+                reservas.add(nuevaReserva);
+                System.out.println("Se ha realizado la reserva con éxito.");
+            }else {
+                System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
+            }
         }
     }
 
+    public void realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdultos, int numNiños, Persona persona, Actividad actividad) {
+        Reserva nuevaReserva = new Reserva(inicio,fin,actividad,persona,alojamiento);
+        reservas.add(nuevaReserva);
+        System.out.println("Se ha realizado la reserva con éxito.");
+    }
+
+
     public void actualizarReserva(String email, String fechaNacimiento){
-        if(autenticacion(email, LocalDate.parse(fechaNacimiento, DateTimeFormatter.ISO_LOCAL_DATE))){
-            Persona cliente = getClientePorEmail(email);
+        Persona cliente = autenticacion(email, LocalDate.parse(fechaNacimiento, DateTimeFormatter.ISO_LOCAL_DATE));
+        if(cliente != null){
             if(getReservasActualesPorCliente(cliente).isEmpty()){
                 System.out.println("El cliente no posee reservas actualmente.");
             }
@@ -164,11 +183,13 @@ public class SistemaReservas {
         Scanner scanner = new Scanner(System.in);
 
         List<Reserva> reservasCliente = getReservasActualesPorCliente(cliente);
-        System.out.println("Estas son tus habitaciones reservadas");
+        System.out.println("Estas son tus habitaciones reservadas:");
         int count = 1;
         for(Reserva reserva : getReservasActualesPorCliente(cliente)){
-            System.out.println(count + ": " +reserva.getHabitacion() + reserva.getAlojamiento().getNombre());
-            count++;
+            if(!(reserva.getAlojamiento() instanceof DiaDeSol)){
+                System.out.println(count + ": " + reserva.getAlojamiento().getNombre() +" - "+ reserva.getHabitacion());
+                count++;
+            }
         }
         System.out.println("Selecciona el número de la habitación que quieres cambiar:");
         int opcion = scanner.nextInt();
@@ -236,7 +257,7 @@ public class SistemaReservas {
         String nombreHabitacion = scanner.nextLine();
 
         Reserva reservaActual = reservas.stream()
-                .filter(r -> r.getCliente().equals(cliente) &&
+                .filter(r -> !(r.getAlojamiento() instanceof DiaDeSol) && r.getCliente().equals(cliente) &&
                         r.getHabitacion().getNombre().equalsIgnoreCase(nombreHabitacion) &&
                         r.getAlojamiento().getNombre().equalsIgnoreCase(nombreAlojamiento))
                 .findFirst()
@@ -247,24 +268,21 @@ public class SistemaReservas {
             return;
         }
 
-        // Eliminar la reserva actual
         reservas.remove(reservaActual);
-
-        // Actualizar la cantidad disponible y disponibilidad de la habitación
         Habitacion habitacionReservada = reservaActual.getHabitacion();
         habitacionReservada.setCantidadDisponible(habitacionReservada.getCantidadDisponible() + 1);
         habitacionReservada.setEstadoDisponibilidad(true);
-
         System.out.println("Se ha eliminado tu reserva actual. Procede a crear una nueva reserva.");
     }
-
-
     //métodos adicionales
 
-    private boolean verificarHabitacionesDisponibles(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numHabitaciones) {
+    private boolean verificarHabitacionesDisponibles(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numHabitaciones, int numAdultos, int numNiños) {
         int totalHabitacionesDisponibles = 0;
         for (Habitacion habitacion : alojamiento.getHabitaciones()) {
-            if (habitacion.getCantidadDisponible() > 0 && verificarDisponibilidadFecha(habitacion, inicio, fin)) {
+            if (habitacion.getCantidadDisponible() > 0
+                    && verificarDisponibilidadFecha(alojamiento,habitacion, inicio, fin) &&
+                    habitacion.getCapacidadMaxima() > (numAdultos + numNiños)
+            ) {
                 totalHabitacionesDisponibles += habitacion.getCantidadDisponible();
                 if (totalHabitacionesDisponibles >= numHabitaciones) {
                     return true;
@@ -274,9 +292,9 @@ public class SistemaReservas {
         return false;
     }
 
-    private boolean verificarDisponibilidadFecha(Habitacion habitacion, LocalDate inicio, LocalDate fin) {
-        for(Reserva reserva : reservas){
-            if(reserva.getHabitacion().equals(habitacion)){
+    private boolean verificarDisponibilidadFecha(Alojamiento alojamiento, Habitacion habitacion, LocalDate inicio, LocalDate fin) {
+        for (Reserva reserva : reservas) {
+            if (reserva.getHabitacion().equals(habitacion) && reserva.getAlojamiento().equals(alojamiento)) {
                 if ((inicio.isBefore(reserva.getFin()) && inicio.isAfter(reserva.getInicio())) ||
                         (fin.isBefore(reserva.getFin()) && fin.isAfter(reserva.getInicio())) ||
                         (inicio.isBefore(reserva.getInicio()) && fin.isAfter(reserva.getFin())) ||
@@ -287,6 +305,7 @@ public class SistemaReservas {
         }
         return true;
     }
+
 
     public Alojamiento obtenerAlojamientoPorNombre(String nombreAlojamiento) {
         Alojamiento alojamiento = alojamientos.stream()
@@ -314,33 +333,42 @@ public class SistemaReservas {
     public void getReservasActuales(){
         System.out.println("----------Reservas actuales----------");
         for (Reserva reservas: this.getReservas()){
-            System.out.println("Cliente: " + reservas.getCliente().toString() +
-                    " - Habitación: "+reservas.getHabitacion().toString() +
-                    " - Llegada: " +  reservas.getInicio() +
-                    "- -Salida: " + reservas.getFin() +
-                    "- -Estado: " +reservas.getEstado()
-            );
+            if(!(reservas.getAlojamiento() instanceof DiaDeSol)){
+                System.out.println("Cliente: " + reservas.getCliente().toString() +
+                        " - Habitación: "+reservas.getHabitacion().toString() +
+                        " - Llegada: " +  reservas.getInicio() +
+                        "- -Salida: " + reservas.getFin() +
+                        "- -Estado: " +reservas.getEstado()
+                );
+            }else{
+                System.out.println("Cliente: " + reservas.getCliente().toString() +
+                        " - Actividades: "+reservas.getActividad().toString() +
+                        " - Llegada: " +  reservas.getInicio() +
+                        "- -Salida: " + reservas.getFin() +
+                        "- -Estado: " +reservas.getEstado()
+                );
+            }
         }
         System.out.println("-------------------------------------");
     }
 
     public List<Reserva> getReservasActualesPorCliente(Persona cliente) {
         return reservas.stream()
-                .filter(reserva -> reserva.getCliente().getNombre().equalsIgnoreCase(cliente.getNombre()) &&
-                        reserva.getCliente().getFechaNacimiento().equals(cliente.getFechaNacimiento()))
+                .filter(reserva -> reserva.getCliente().equals(cliente))
                 .collect(Collectors.toList());
     }
 
 
-    private boolean autenticacion(String email, LocalDate fechaNacimiento){
+    private Persona autenticacion(String email, LocalDate fechaNacimiento){
         for (Persona persona : this.getClientesRegistrados()){
             if((persona.getFechaNacimiento().equals(fechaNacimiento) &&
                     (persona.getEmail().equalsIgnoreCase(email)))){
                 System.out.println("Bienvenid@ " + persona.getNombre());
-                return true;
+                return persona;
             }
         }
-        return false;
+        System.out.println("No se encontró un cliente con los datos proporcionados.");
+        return null;
     }
 
 }

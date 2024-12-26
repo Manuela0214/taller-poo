@@ -10,6 +10,7 @@ public class Reserva {
     private Persona cliente;
     private String estado;
     private Alojamiento alojamiento;
+    private Actividad actividad;
 
     public Reserva(LocalDate inicio, LocalDate fin, Habitacion habitacion, Persona cliente, Alojamiento alojamiento) {
         this.inicio = inicio;
@@ -18,6 +19,23 @@ public class Reserva {
         this.cliente = cliente;
         this.estado = "confirmada";
         this.alojamiento = alojamiento;
+    }
+
+    public Reserva(LocalDate inicio, LocalDate fin, Actividad actividad, Persona cliente, Alojamiento alojamiento) {
+        this.inicio = inicio;
+        this.fin = fin;
+        this.actividad = actividad;
+        this.cliente = cliente;
+        this.estado = "confirmada";
+        this.alojamiento = alojamiento;
+    }
+
+    public Actividad getActividad() {
+        return actividad;
+    }
+
+    public void setActividad(Actividad actividad) {
+        this.actividad = actividad;
     }
 
     public LocalDate getInicio() {
@@ -77,6 +95,7 @@ public class Reserva {
                 ", cliente=" + cliente +
                 ", estado='" + estado + '\'' +
                 ", alojamiento=" + alojamiento +
+                ", actividad=" + actividad +
                 '}';
     }
 }
