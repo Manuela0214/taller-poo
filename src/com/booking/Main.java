@@ -31,6 +31,15 @@ public class Main {
                 LocalTime.of(12,0),
                 LocalDate.of(1976, 6, 15)
         );
+        Persona cliente3 = new Persona(
+                "Jose",
+                "Buendia",
+                "josebuen@gmail.com",
+                "Español",
+                "3145512688",
+                LocalTime.of(1,0),
+                LocalDate.of(1980, 7, 14)
+        );
 
         //Habitaciones
         Habitacion habitacion1 = new Habitacion(
@@ -120,6 +129,8 @@ public class Main {
         //busqueda de alojamientos por parametro
         LocalDate fechaInicio = LocalDate.of(2024, 12, 27);
         LocalDate fechaFin = LocalDate.of(2024, 12, 29);
+        LocalDate fechaInicio2 = LocalDate.of(2024, 9, 13);
+        LocalDate fechaFin2 = LocalDate.of(2024, 9, 18);
 
 //        sistema.buscarAlojamientos("Bogotá", "Hotel", fechaInicio, fechaFin, 2, 1, 2);
 //        sistema.buscarAlojamientos("Manizales", "Dia de Sol", fechaInicio, fechaFin, 2, 1, 2);
@@ -132,12 +143,14 @@ public class Main {
         //reservas de alojamientos
         sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente1,habitacion1);
         sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,1,cliente2,habitacion5);
-//        sistema.realizarReserva(hotel, fechaInicio, fechaFin, 2,2,cliente,habitacion1);
-//        sistema.realizarReserva(finca, fechaInicio, fechaFin, 2,2,cliente,habitacion3);
+        sistema.realizarReserva(apartamento, fechaInicio, fechaFin, 3,1,cliente3,habitacion2);
+        sistema.realizarReserva(apartamento, fechaInicio2, fechaFin2, 3,1,cliente1,habitacion2);
 
         sistema.getReservasActuales();
-        //Cambiar alojamiento
-        sistema.cambiarAlojamiento(LocalDate.of(2024,9,15), LocalDate.of(2024,9,27),cliente1,habitacion1);
+
+        //actualizar reserva
+        sistema.actualizarReserva("anita@gmail.com","1976-06-15");
+
         sistema.getReservasActuales();
     }
 }

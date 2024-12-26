@@ -9,13 +9,15 @@ public class Reserva {
     private Habitacion habitacion;
     private Persona cliente;
     private String estado;
+    private Alojamiento alojamiento;
 
-    public Reserva(LocalDate inicio, LocalDate fin, Habitacion habitacion, Persona cliente) {
+    public Reserva(LocalDate inicio, LocalDate fin, Habitacion habitacion, Persona cliente, Alojamiento alojamiento) {
         this.inicio = inicio;
         this.fin = fin;
         this.habitacion = habitacion;
         this.cliente = cliente;
         this.estado = "confirmada";
+        this.alojamiento = alojamiento;
     }
 
     public LocalDate getInicio() {
@@ -58,6 +60,14 @@ public class Reserva {
         this.estado = estado;
     }
 
+    public Alojamiento getAlojamiento() {
+        return alojamiento;
+    }
+
+    public void setAlojamiento(Alojamiento alojamiento) {
+        this.alojamiento = alojamiento;
+    }
+
     @Override
     public String toString() {
         return "Reserva{" +
@@ -66,6 +76,7 @@ public class Reserva {
                 ", habitacion=" + habitacion +
                 ", cliente=" + cliente +
                 ", estado='" + estado + '\'' +
+                ", alojamiento=" + alojamiento +
                 '}';
     }
 }

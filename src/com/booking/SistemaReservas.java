@@ -1,6 +1,7 @@
 package com.booking;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -118,7 +119,7 @@ public class SistemaReservas {
             if(habitacion.getCantidadDisponible() <= 0){
                 System.out.println("No hay habitaciones disponibles de este tipo.");
             }
-            Reserva nuevaReserva = new Reserva(inicio, fin, habitacion, persona);
+            Reserva nuevaReserva = new Reserva(inicio, fin, habitacion, persona, alojamiento);
             habitacion.setCantidadDisponible(habitacion.getCantidadDisponible() - 1);
             habitacion.setEstadoDisponibilidad(false);
             reservas.add(nuevaReserva);
@@ -130,31 +131,133 @@ public class SistemaReservas {
         }
     }
 
-    public void actualizarReserva(){
-
+    public void actualizarReserva(String email, String fechaNacimiento){
+        if(autenticacion(email, LocalDate.parse(fechaNacimiento, DateTimeFormatter.ISO_LOCAL_DATE))){
+            Persona cliente = getClientePorEmail(email);
+            if(getReservasActualesPorCliente(cliente).isEmpty()){
+                System.out.println("El cliente no posee reservas actualmente.");
+            }
+            System.out.println(getReservasActualesPorCliente(cliente).toString());
+            System.out.println("¿Cómo desea actualizar su reserva? (Ingrese una opción)");
+            System.out.println("1. Cambio de habitación");
+            System.out.println("2. Cambio de alojamiento");
+            Scanner scanner = new Scanner(System.in);
+            int opcion = scanner.nextInt();
+            switch (opcion){
+                case 1:
+                    System.out.println("CAMBIO DE HABITACION");
+                    cambiarHabitacion(cliente);
+                    break;
+                case 2:
+                    System.out.println("CAMBIO DE ALOJAMIENTO");
+                    cambiarAlojamiento(cliente);
+                    break;
+                default:
+                    System.out.println("Opción no válida. Intenta de nuevo.");
+            }
+        }else{
+            System.out.println("Ha ocurrido un error durante la autenticación. Email y/o fecha de nacimiento inválida");
+        }
     }
 
-    public void cambiarHabitacion(){
+    public void cambiarHabitacion(Persona cliente){
+        Scanner scanner = new Scanner(System.in);
 
-    }
-
-    public void cambiarAlojamiento(LocalDate inicio, LocalDate fin, Persona persona, Habitacion habitacion){
-        Reserva reservaActual = reservas.stream()
-                .filter(
-                        r -> r.getHabitacion().equals(habitacion) &&
-                                r.getCliente().equals(persona)
-                ).findFirst()
-                .orElse(null);
-        if (reservaActual == null) {
-            System.out.println("No tienes una reserva activa para cambiar.");
+        List<Reserva> reservasCliente = getReservasActualesPorCliente(cliente);
+        System.out.println("Estas son tus habitaciones reservadas");
+        int count = 1;
+        for(Reserva reserva : getReservasActualesPorCliente(cliente)){
+            System.out.println(count + ": " +reserva.getHabitacion() + reserva.getAlojamiento().getNombre());
+            count++;
+        }
+        System.out.println("Selecciona el número de la habitación que quieres cambiar:");
+        int opcion = scanner.nextInt();
+        scanner.nextLine();
+        if (opcion < 1 || opcion > reservasCliente.size()) {
+            System.out.println("Opción inválida.");
             return;
         }
+        Reserva reservaSeleccionada = reservasCliente.get(opcion - 1);
+        Habitacion habitacionActual = reservaSeleccionada.getHabitacion();
+        Alojamiento alojamiento = reservasCliente.getFirst().getAlojamiento();
+        System.out.println("Estas son las habitaciones disponibles en " + alojamiento.getNombre() + ":");
+        List<Habitacion> habitacionesDisponibles = alojamiento.getHabitaciones().stream()
+                .filter(h -> h.isEstadoDisponibilidad() && !h.equals(habitacionActual))
+                .collect(Collectors.toList());
+
+        if (habitacionesDisponibles.isEmpty()) {
+            System.out.println("No hay habitaciones disponibles en este alojamiento.");
+            return;
+        }
+        for (int i = 0; i < habitacionesDisponibles.size(); i++) {
+            Habitacion habitacion = habitacionesDisponibles.get(i);
+            System.out.println((i + 1) + ". Habitación: " + habitacion.getNombre() +
+                    " (Precio por noche: $" + habitacion.getPrecioNoche() + ")");
+        }
+        System.out.println("Selecciona el número de la nueva habitación:");
+        int nuevaHabitacionOpcion = scanner.nextInt();
+        scanner.nextLine();
+
+        if (nuevaHabitacionOpcion < 1 || nuevaHabitacionOpcion > habitacionesDisponibles.size()) {
+            System.out.println("Opción inválida.");
+            return;
+        }
+
+        Habitacion nuevaHabitacion = habitacionesDisponibles.get(nuevaHabitacionOpcion - 1);
+
+        reservas.remove(reservaSeleccionada);
+        habitacionActual.setCantidadDisponible(habitacionActual.getCantidadDisponible() + 1);
+        habitacionActual.setEstadoDisponibilidad(true);
+
+        nuevaHabitacion.setCantidadDisponible(nuevaHabitacion.getCantidadDisponible() - 1);
+        if (nuevaHabitacion.getCantidadDisponible() <= 0) {
+            nuevaHabitacion.setEstadoDisponibilidad(false);
+        }
+
+        Reserva nuevaReserva = new Reserva(reservaSeleccionada.getInicio(), reservaSeleccionada.getFin(),
+                nuevaHabitacion, cliente, alojamiento);
+        reservas.add(nuevaReserva);
+
+        System.out.println("Se ha cambiado tu reserva a la habitación " + nuevaHabitacion.getNombre() + ".");
+    }
+
+    public void cambiarAlojamiento(Persona cliente) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese la fecha de inicio (formato YYYY-MM-DD):");
+        String inicioStr = scanner.nextLine();
+        LocalDate inicio = LocalDate.parse(inicioStr);
+        System.out.println("Ingrese la fecha de fin (formato YYYY-MM-DD):");
+        String finStr = scanner.nextLine();
+        LocalDate fin = LocalDate.parse(finStr);
+        System.out.println("Ingrese el nombre del alojamiento:");
+        String nombreAlojamiento = scanner.nextLine();
+        System.out.println("Ingrese el nombre de la habitación:");
+        String nombreHabitacion = scanner.nextLine();
+
+        Reserva reservaActual = reservas.stream()
+                .filter(r -> r.getCliente().equals(cliente) &&
+                        r.getHabitacion().getNombre().equalsIgnoreCase(nombreHabitacion) &&
+                        r.getAlojamiento().getNombre().equalsIgnoreCase(nombreAlojamiento))
+                .findFirst()
+                .orElse(null);
+
+        if (reservaActual == null) {
+            System.out.println("No tienes una reserva activa para cambiar con la habitación especificada.");
+            return;
+        }
+
+        // Eliminar la reserva actual
         reservas.remove(reservaActual);
+
+        // Actualizar la cantidad disponible y disponibilidad de la habitación
         Habitacion habitacionReservada = reservaActual.getHabitacion();
-        habitacionReservada.setCantidadDisponible(habitacion.getCantidadDisponible() + 1);
+        habitacionReservada.setCantidadDisponible(habitacionReservada.getCantidadDisponible() + 1);
         habitacionReservada.setEstadoDisponibilidad(true);
+
         System.out.println("Se ha eliminado tu reserva actual. Procede a crear una nueva reserva.");
     }
+
 
     //métodos adicionales
 
@@ -200,10 +303,10 @@ public class SistemaReservas {
                 .collect(Collectors.toList());
     }
 
-    public Persona getClientePorNombre(String nombre) {
+    public Persona getClientePorEmail(String email) {
         return reservas.stream()
                 .map(Reserva::getCliente)
-                .filter(cliente -> cliente.getNombre().equalsIgnoreCase(nombre))
+                .filter(cliente -> cliente.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
     }
@@ -219,6 +322,25 @@ public class SistemaReservas {
             );
         }
         System.out.println("-------------------------------------");
+    }
+
+    public List<Reserva> getReservasActualesPorCliente(Persona cliente) {
+        return reservas.stream()
+                .filter(reserva -> reserva.getCliente().getNombre().equalsIgnoreCase(cliente.getNombre()) &&
+                        reserva.getCliente().getFechaNacimiento().equals(cliente.getFechaNacimiento()))
+                .collect(Collectors.toList());
+    }
+
+
+    private boolean autenticacion(String email, LocalDate fechaNacimiento){
+        for (Persona persona : this.getClientesRegistrados()){
+            if((persona.getFechaNacimiento().equals(fechaNacimiento) &&
+                    (persona.getEmail().equalsIgnoreCase(email)))){
+                System.out.println("Bienvenid@ " + persona.getNombre());
+                return true;
+            }
+        }
+        return false;
     }
 
 }
