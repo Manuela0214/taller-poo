@@ -5,26 +5,10 @@ import java.util.List;
 
 public class Apartamento extends Alojamiento{
 
-    private List<Habitacion> habitaciones;
     private List<Reserva> reservas;
 
     public Apartamento(String nombre, double calificacion, double precioNoche, String ciudad) {
         super(nombre, calificacion, precioNoche, ciudad);
-        this.habitaciones = new ArrayList<>();
-    }
-
-    public void agregarHabitacion(Habitacion habitacion) {
-        this.habitaciones.add(habitacion);
-    }
-
-    @Override
-    public List<Habitacion> getHabitaciones() {
-        return habitaciones;
-    }
-
-    @Override
-    public void setHabitaciones(List<Habitacion> habitaciones) {
-        this.habitaciones = habitaciones;
     }
 
     public List<Reserva> getReservas() {
@@ -42,7 +26,6 @@ public class Apartamento extends Alojamiento{
 
     @Override
     public boolean habitacionExiste(Habitacion habitacion) {
-        return this.habitaciones.stream()
-                .anyMatch(h -> h.getNombre().equalsIgnoreCase(habitacion.getNombre()));
+        return false;
     }
 }

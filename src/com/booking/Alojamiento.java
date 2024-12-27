@@ -11,6 +11,7 @@ public abstract class Alojamiento {
     private double precioNoche;
     private String ciudad;
     private List<Habitacion> habitaciones;
+    private List<Actividad> actividades;
 
     Alojamiento(String nombre, double calificacion, double precioNoche, String ciudad) {
         this.nombre = nombre;
@@ -18,6 +19,7 @@ public abstract class Alojamiento {
         this.precioNoche = precioNoche;
         this.ciudad = ciudad;
         this.habitaciones = new ArrayList<>();
+        this.actividades = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -64,6 +66,14 @@ public abstract class Alojamiento {
 
     public abstract boolean habitacionExiste(Habitacion habitacion);
 
+    public List<Actividad> getActividades() {
+        return actividades;
+    }
+
+    public void setActividades(List<Actividad> actividades) {
+        this.actividades = actividades;
+    }
+
     @Override
     public String toString() {
         return "Alojamiento{" +
@@ -71,14 +81,14 @@ public abstract class Alojamiento {
                 ", calificacion=" + calificacion +
                 ", precioNoche=" + precioNoche +
                 ", ciudad='" + ciudad + '\'' +
-                ", habitaciones=" + habitaciones +
                 '}';
     }
 
-    public Habitacion getHabitacionPorNombre(String nombre) {
-        return habitaciones.stream()
-                .filter(habitacion -> habitacion.getNombre().equalsIgnoreCase(nombre))
-                .findFirst()
-                .orElse(null);
-    }
+//    public Habitacion obtenerHabitacionPorNombre(String nombreHabitacion) {
+//        Habitacion habitacion = getHabitaciones().stream()
+//                .filter(a -> a.getNombre().equals(nombreHabitacion))
+//                .findFirst()
+//                .orElse(null);
+//        return habitacion;
+//    }
 }

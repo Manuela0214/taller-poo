@@ -21,6 +21,14 @@ public class Reserva {
         this.alojamiento = alojamiento;
     }
 
+    public Reserva(LocalDate inicio, LocalDate fin, Persona cliente, Alojamiento alojamiento) {
+        this.inicio = inicio;
+        this.fin = fin;
+        this.cliente = cliente;
+        this.estado = "confirmada";
+        this.alojamiento = alojamiento;
+    }
+
     public Reserva(LocalDate inicio, LocalDate fin, Actividad actividad, Persona cliente, Alojamiento alojamiento) {
         this.inicio = inicio;
         this.fin = fin;

@@ -38,7 +38,7 @@ public class SistemaReservas {
 
         for (Alojamiento alojamiento : alojamientos) {
             if (alojamiento.getCiudad().equalsIgnoreCase(ciudad) && tipoAlojamiento.equals(alojamiento.getTipo())) {
-                if (verificarHabitacionesDisponibles(alojamiento, inicio, fin, numHabitaciones,numAdultos,numNiños) && !(alojamiento instanceof DiaDeSol)) {
+                if (verificarHabitacionesDisponibles(alojamiento, inicio, fin, numHabitaciones,numAdultos,numNiños) && (alojamiento instanceof Hotel)) {
                     Habitacion habitacionMasEconomica = alojamiento.getHabitaciones()
                             .stream()
                             .min(Comparator.comparingDouble(Habitacion::getPrecioNoche))
@@ -83,7 +83,34 @@ public class SistemaReservas {
                                         "- Precio: " + actividad.getPrecio()
                         );
                     }
+                    alojamientosDisponibles.add(alojamiento);
                     System.out.println("\n");
+                }if((alojamiento instanceof Apartamento) || (alojamiento instanceof Finca)){
+                    double precioBase = alojamiento.getPrecioNoche() * diasEstadia * numHabitaciones;
+                    double aumento = 0;
+                    double descuento = 0;
+
+
+                    if(inicio.getDayOfMonth() >= 5 && fin.getDayOfMonth() <=  10){
+                        descuento = precioBase * 0.08;
+                        precioBase *= 0.92;
+                    }else if(inicio.getDayOfMonth() >= 10 && fin.getDayOfMonth() <=  15){
+                        aumento = precioBase * 0.10;
+                        precioBase *= 1.10;
+                    }if(inicio.getDayOfMonth() >= primerUltimos5Dias.getDayOfMonth()
+                            && fin.getDayOfMonth() <=  ultimoDiaMes.getDayOfMonth()){
+                        aumento = precioBase * 0.15;
+                        precioBase *= 1.15;
+                    }
+                    System.out.println(
+                            alojamiento.getTipo() + ": " + alojamiento.getNombre() +
+                                    ", Calificación: " + alojamiento.getCalificacion() +
+                                    ", Precio Base: " + alojamiento.getPrecioNoche() * diasEstadia * numHabitaciones +
+                                    ", Aumento: " + Math.round(aumento) +
+                                    ", Descuento: " + Math.round(descuento) +
+                                    ", Precio Total: " + Math.round(precioBase) + "\n"
+                    );
+                    alojamientosDisponibles.add(alojamiento);
                 }
             }
         }
@@ -149,6 +176,22 @@ public class SistemaReservas {
         System.out.println("Se ha realizado la reserva con éxito.");
     }
 
+    public void realizarReserva(Alojamiento alojamiento, LocalDate inicio, LocalDate fin, int numAdultos, int numNiños, Persona persona) {
+        Reserva nuevaReserva = new Reserva(inicio,fin,persona,alojamiento);
+        boolean reservada = false;
+        for (Reserva reserva : reservas){
+            if (reserva.equals(nuevaReserva)){
+                System.out.println("La habitacion ya se encuentra reservada en el alojamiento especificado.");
+                reservada = true;
+            }
+        }
+        if (!reservada && verificarDisponibilidadFecha(alojamiento, inicio, fin)){
+            reservas.add(nuevaReserva);
+            System.out.println("Se ha realizado la reserva con éxito.");
+        }else {
+            System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
+        }
+    }
 
     public void actualizarReserva(String email, String fechaNacimiento){
         Persona cliente = autenticacion(email, LocalDate.parse(fechaNacimiento, DateTimeFormatter.ISO_LOCAL_DATE));
@@ -186,7 +229,7 @@ public class SistemaReservas {
         System.out.println("Estas son tus habitaciones reservadas:");
         int count = 1;
         for(Reserva reserva : getReservasActualesPorCliente(cliente)){
-            if(!(reserva.getAlojamiento() instanceof DiaDeSol)){
+            if((reserva.getAlojamiento() instanceof Hotel)){
                 System.out.println(count + ": " + reserva.getAlojamiento().getNombre() +" - "+ reserva.getHabitacion());
                 count++;
             }
@@ -294,26 +337,75 @@ public class SistemaReservas {
 
     private boolean verificarDisponibilidadFecha(Alojamiento alojamiento, Habitacion habitacion, LocalDate inicio, LocalDate fin) {
         for (Reserva reserva : reservas) {
-            if (reserva.getHabitacion().equals(habitacion) && reserva.getAlojamiento().equals(alojamiento)) {
-                if ((inicio.isBefore(reserva.getFin()) && inicio.isAfter(reserva.getInicio())) ||
-                        (fin.isBefore(reserva.getFin()) && fin.isAfter(reserva.getInicio())) ||
-                        (inicio.isBefore(reserva.getInicio()) && fin.isAfter(reserva.getFin())) ||
-                        (inicio.equals(reserva.getInicio()) || fin.equals(reserva.getFin()))) {
-                    return false;
+            if(alojamiento instanceof Hotel) {
+                if (reserva.getHabitacion().equals(habitacion) && reserva.getAlojamiento().equals(alojamiento)) {
+                    return fechaTraspone(inicio, fin, reserva);
+                }
+            }else if ((alojamiento instanceof Apartamento) || (alojamiento instanceof Finca)) {
+                if (reserva.getAlojamiento().equals(alojamiento)){
+                    fechaTraspone(inicio, fin, reserva);
                 }
             }
         }
         return true;
     }
 
+    private boolean verificarDisponibilidadFecha(Alojamiento alojamiento, LocalDate inicio, LocalDate fin) {
+        for (Reserva reserva : reservas) {
+            if ((alojamiento instanceof Apartamento) || (alojamiento instanceof Finca)) {
+                if (reserva.getAlojamiento().equals(alojamiento)){
+                    fechaTraspone(inicio, fin, reserva);
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean fechaTraspone(LocalDate inicio, LocalDate fin, Reserva reserva) {
+        if ((inicio.isBefore(reserva.getFin()) && inicio.isAfter(reserva.getInicio())) ||
+                (fin.isBefore(reserva.getFin()) && fin.isAfter(reserva.getInicio())) ||
+                (inicio.isBefore(reserva.getInicio()) && fin.isAfter(reserva.getFin())) ||
+                (inicio.equals(reserva.getInicio()) || fin.equals(reserva.getFin()))) {
+            return false;
+        }
+        return true;
+    }
+
 
     public Alojamiento obtenerAlojamientoPorNombre(String nombreAlojamiento) {
-        Alojamiento alojamiento = alojamientos.stream()
+        Alojamiento alojamiento = getAlojamientos().stream()
                 .filter(a -> a.getNombre().equals(nombreAlojamiento))
                 .findFirst()
                 .orElse(null);
         return alojamiento;
     }
+
+    public Habitacion obtenerHabitacionPorNombre(String nombreHabitacion) {
+        for (Alojamiento alojamiento : this.getAlojamientos()) {
+            Habitacion habitacion = alojamiento.getHabitaciones().stream()
+                    .filter(a -> a.getNombre().equals(nombreHabitacion))
+                    .findFirst()
+                    .orElse(null);
+            if (habitacion != null) {
+                return habitacion;
+            }
+        }
+        return null;
+    }
+
+    public Actividad obtenerActividadPorNombre(String nombreActividad) {
+        for (Alojamiento alojamiento : this.getAlojamientos()) {
+            Actividad actividad = alojamiento.getActividades().stream()
+                    .filter(a -> a.getNombre().equals(nombreActividad))
+                    .findFirst()
+                    .orElse(null);
+            if (actividad != null) {
+                return actividad;
+            }
+        }
+        return null;
+    }
+
 
     public List<Persona> getClientesRegistrados() {
         return reservas.stream()
@@ -358,6 +450,11 @@ public class SistemaReservas {
                 .collect(Collectors.toList());
     }
 
+    public List<Reserva> getReservasActualesPorEmailCliente(String email) {
+        return reservas.stream()
+                .filter(reserva -> reserva.getCliente().getEmail().equalsIgnoreCase(email))
+                .collect(Collectors.toList());
+    }
 
     private Persona autenticacion(String email, LocalDate fechaNacimiento){
         for (Persona persona : this.getClientesRegistrados()){

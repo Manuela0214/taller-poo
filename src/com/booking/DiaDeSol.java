@@ -33,4 +33,11 @@ public class DiaDeSol extends Alojamiento{
     public boolean habitacionExiste(Habitacion habitacion) {
         return false;
     }
+
+    public Actividad getActividadPorNombre(String nombre) {
+        return this.actividades.stream()
+                .filter(actividad -> actividad.getNombre().equalsIgnoreCase(nombre))
+                .findFirst()
+                .orElse(null);
+    }
 }
