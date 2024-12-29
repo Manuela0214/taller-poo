@@ -8,175 +8,97 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        SistemaReservas sistema = new SistemaReservas();
+        SystemReservations sistema = new SystemReservations();
 
         //----------------------------Clientes
-        Persona cliente1 = new Persona(
-                "Pepito",
-                "Perez",
-                "pepito@gmail.com",
-                "Colombiana",
-                "3102254622",
+        Customer cliente1 = new Customer("Pepito","Perez","pepito@gmail.com","Colombiana","3102254622",
                 LocalTime.of(13,30),
                 LocalDate.of(1998, 1, 27)
         );
-        Persona cliente2 = new Persona(
-                "Ana",
-                "Josefina",
-                "anita@gmail.com",
-                "Mexicana",
-                "3001457742",
-                LocalTime.of(12,0),
-                LocalDate.of(1976, 6, 15)
-        );
-        Persona cliente3 = new Persona(
-                "Jose",
-                "Buendia",
-                "josebuen@gmail.com",
-                "Español",
-                "3145512688",
-                LocalTime.of(1,0),
-                LocalDate.of(1980, 7, 14)
-        );
 
         //----------------------------Habitaciones
-        Habitacion habitacion1 = new Habitacion(
-                "Habitación doble",
-                "2 camas dobles, Vista al mar, Aire acondicionado, Cafetera",
-                130,
-                5,
-                4
-        );
-        Habitacion habitacion2 = new Habitacion(
-                "Habitación Sencilla",
-                "1 cama sencilla, Escritorio, WiFi gratuito, Baño privado",
-                80,
-                6,
-                2
-        );
-        Habitacion habitacion3 = new Habitacion(
-                "Habitación Suite",
-                "Cama King, Jacuzzi, Vista panorámica, Minibar, TV de pantalla plana",
-                200,
-                3,
-                2
-        );
-        Habitacion habitacion4 = new Habitacion(
-                "Habitación Triple",
-                "3 camas individuales, Balcón privado, Aire acondicionado, TV, Mini nevera",
-                150,
-                5,
-                9
-        );
-        Habitacion habitacion5 = new Habitacion(
-                "Habitación Familiar",
-                "2 camas dobles, Sofá cama, Cocina completa, Baño privado, WiFi gratuito",
-                180,
-                6,
-                20
-        );
-        Habitacion habitacion6 = new Habitacion(
-                "Habitación Deluxe",
-                "Cama King, Jacuzzi privado, Terraza con vista al mar, Minibar, Smart TV",
-                250,
-                2,
-                2
-        );
+        Room room1 = new Room("Habitación doble","2 camas dobles, Vista al mar, Aire acondicionado, Cafetera",130.0,5,4);
+        Room room2 = new Room("Habitación Sencilla","1 cama sencilla, Escritorio, WiFi gratuito, Baño privado",80.0,6,2);
+        Room room3 = new Room("Habitación Suite","Cama King, Jacuzzi, Vista panorámica, Minibar, TV de pantalla plana",200.0,3,2);
+        Room room4 = new Room("Habitación Triple","3 camas individuales, Balcón privado, Aire acondicionado, TV, Mini nevera",150.0,5,9);
+        Room room5 = new Room("Habitación Familiar","2 camas dobles, Sofá cama, Cocina completa, Baño privado, WiFi gratuito",180.0,6,12);
 
         //----------------------------Actividades
-        Actividad actividades1 = new Actividad("Natación", true, 20);
-        Actividad actividades2 = new Actividad("Paseo en bote", true, 25);
-        Actividad actividades3 = new Actividad("Caminata", false, 15);
-        Actividad actividades4 = new Actividad("Ciclo paseo", true, 10);
-        Actividad actividades5 = new Actividad("Sendero ecológico", false, 30);
+        Activity actividades1 = new Activity("Natación", true, 20.0);
+        Activity actividades2 = new Activity("Paseo en bote", true, 25.0);
+        Activity actividades3 = new Activity("Caminata", false, 15.0);
+        Activity actividades4 = new Activity("Ciclo paseo", true, 10.0);
+        Activity actividades5 = new Activity("Sendero ecológico", false, 30.0);
 
         //----------------------------Alojamientos
         //Bogotá
-        Hotel hotel1B = new Hotel("Hotel Paraiso", 4.2, 100, "Bogota");
-        Hotel hotel2B = new Hotel("Hotel la Colina", 4.5, 110, "Bogota");
-        Hotel hotel3B = new Hotel("Hotel Guamal", 4.7, 114, "Bogota");
-        Apartamento apartamento1B = new Apartamento("Torres Niza", 4.8, 120, "Bogota");
-        Apartamento apartamento2B = new Apartamento("El Mirador", 4.1, 90, "Bogota");
+        Hotel hotel1B = new Hotel("Hotel Paraiso", 4.2, 100.0, "Bogota");
+        Hotel hotel2B = new Hotel("Hotel la Colina", 4.5, 110.0, "Bogota");
+        Hotel hotel3B = new Hotel("Hotel Guamal", 4.7, 114.0, "Bogota");
+        Apartment apartment1B = new Apartment("Torres Niza", 4.8, 120.0, "Bogota");
+        Apartment apartment2B = new Apartment("El Mirador", 4.1, 90.0, "Bogota");
         //Medellin
-        Apartamento apartamento1M = new Apartamento("Guaduales apartamentos",4.0, 95, "Medellin");
-        Apartamento apartamento2M = new Apartamento("La Morada",4.3, 90, "Medellin");
-        Apartamento apartamento3M = new Apartamento("Edificio La Montañita",4.7, 80, "Medellin");
-        Finca finca1M = new Finca("Finca la maria", 4.8, 120, "Medellin");
+        Apartment apartment1M = new Apartment("Guaduales apartamentos",4.0, 95.0, "Medellin");
+        Apartment apartment2M = new Apartment("La Morada",4.3, 90.0, "Medellin");
+        Apartment apartment3M = new Apartment("Edificio La Montañita",4.7, 80.0, "Medellin");
+        Farm farm1M = new Farm("Finca la maria", 4.8, 120.0, "Medellin");
         //Pereira
-        DiaDeSol diaDeSol1P = new DiaDeSol("La Rochela", 4.6, 50, "Pereira");
-        DiaDeSol diaDeSol2P = new DiaDeSol("Santagueda", 4.3, 45, "Pereira");
-        Hotel hotel1P = new Hotel("Hotel la Estacion", 4.7, 114, "Pereira");
+        DayOfSun dayOfSun1P = new DayOfSun("La Rochela", 4.6, 50.0, "Pereira");
+        DayOfSun dayOfSun2P = new DayOfSun("Santagueda", 4.3, 45.0, "Pereira");
+        Hotel hotel1P = new Hotel("Hotel la Estacion", 4.7, 114.0, "Pereira");
 
         //----------------------------Creación de habitaciones y actividades
         //Bogota
-        hotel1B.agregarHabitacion(habitacion1);
-        hotel1B.agregarHabitacion(habitacion2);
-        hotel1B.agregarHabitacion(habitacion3);
-        hotel1B.agregarHabitacion(habitacion6);
-        hotel2B.agregarHabitacion(habitacion4);
-        hotel2B.agregarHabitacion(habitacion5);
-        hotel2B.agregarHabitacion(habitacion1);
-        hotel3B.agregarHabitacion(habitacion2);
-        hotel3B.agregarHabitacion(habitacion3);
-        hotel3B.agregarHabitacion(habitacion4);
-        hotel3B.agregarHabitacion(habitacion5);
+        hotel1B.addRoom(room1);
+        hotel1B.addRoom(room2);
+        hotel1B.addRoom(room3);
+        hotel2B.addRoom(room4);
+        hotel2B.addRoom(room5);
+        hotel2B.addRoom(room1);
+        hotel3B.addRoom(room2);
+        hotel3B.addRoom(room3);
+        hotel3B.addRoom(room4);
+        hotel3B.addRoom(room5);
         //Pereira
-        diaDeSol1P.agregarActividad(actividades1);
-        diaDeSol1P.agregarActividad(actividades2);
-        diaDeSol1P.agregarActividad(actividades3);
-        diaDeSol2P.agregarActividad(actividades4);
-        diaDeSol2P.agregarActividad(actividades5);
-        hotel1P.agregarHabitacion(habitacion1);
+        dayOfSun1P.addActivity(actividades1);
+        dayOfSun1P.addActivity(actividades2);
+        dayOfSun1P.addActivity(actividades3);
+        dayOfSun2P.addActivity(actividades4);
+        dayOfSun2P.addActivity(actividades5);
+        hotel1P.addRoom(room1);
+        hotel1P.addRoom(room3);
+        hotel1P.addRoom(room5);
 
         //----------------------------creación alojamientos en el sistema de reservas
         //Bogota
-        sistema.agregarAlojamiento(hotel1B);
-        sistema.agregarAlojamiento(hotel2B);
-        sistema.agregarAlojamiento(hotel3B);
-        sistema.agregarAlojamiento(apartamento1B);
-        sistema.agregarAlojamiento(apartamento2B);
+        sistema.addAccommodation(hotel1B);
+        sistema.addAccommodation(hotel2B);
+        sistema.addAccommodation(hotel3B);
+        sistema.addAccommodation(apartment1B);
+        sistema.addAccommodation(apartment2B);
         //Medellin
-        sistema.agregarAlojamiento(apartamento1M);
-        sistema.agregarAlojamiento(apartamento2M);
-        sistema.agregarAlojamiento(apartamento3M);
-        sistema.agregarAlojamiento(finca1M);
+        sistema.addAccommodation(apartment1M);
+        sistema.addAccommodation(apartment2M);
+        sistema.addAccommodation(apartment3M);
+        sistema.addAccommodation(farm1M);
         //Pereira
-        sistema.agregarAlojamiento(diaDeSol1P);
-        sistema.agregarAlojamiento(diaDeSol2P);
-        sistema.agregarAlojamiento(hotel1P);
+        sistema.addAccommodation(dayOfSun1P);
+        sistema.addAccommodation(dayOfSun2P);
+        sistema.addAccommodation(hotel1P);
 
-        //----------------------------busqueda de alojamientos por parametro
-        LocalDate inicio = LocalDate.of(2024, 12, 27);
-        LocalDate fin = LocalDate.of(2024, 12, 29);
-//        //fechas solapadas
-//        LocalDate fechaInicioS = LocalDate.of(2024, 12, 26);
-//        LocalDate fechaFinS = LocalDate.of(2024, 12, 28);
+//        //reservas de alojamientos
+//        sistema.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room1);
+//        sistema.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room2);
+//        sistema.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room3);
+//        sistema.makeReservationApartmentFarm(farm1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
+//        sistema.makeReservationApartmentFarm(apartment1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
+//        sistema.makeReservationDayOfSun(dayOfSun1P, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1,actividades1); //dia de sol
 
-//        sistema.buscarAlojamientos("Bogota", "Hotel", inicio, fin, 2, 1, 2);
-//        sistema.buscarAlojamientos("Pereira", "Dia de Sol", inicio, fin, 2, 1, 2);
-//        sistema.buscarAlojamientos("Bogota", "Apartamento", inicio, fin, 2, 1, 1);
-//        sistema.buscarAlojamientos("Medellin", "Finca", inicio, fin, 2, 1, 1);
 
-        //confirmacion caracteristicas de alojamientos
-//        sistema.confirmarHabitaciones("Hotel Paraiso", fechaInicio, fechaFin, 2, 1, 1);  //agregar 1 niño
-
-        //reservas de alojamientos
-        sistema.realizarReserva(hotel1B, inicio, fin, 2,2,cliente1,habitacion1);
-        sistema.realizarReserva(hotel1B, inicio, fin, 2,2,cliente1,habitacion2);
-//        sistema.realizarReserva(finca1M, fechaInicio, fechaFin, 2,1,cliente2,habitacion5);
-//        sistema.realizarReserva(apartamento1M, fechaInicio, fechaFin, 3,1,cliente3,habitacion2);
-//        sistema.realizarReserva(hotel1B, fechaInicioS, fechaFinS, 2,1,cliente2,habitacion1);  //fecha se solapa
-//        sistema.realizarReserva(diaDeSol1P, fechaInicioS, fechaFinS, 2,1,cliente2,actividades1); //dia de sol
-
-//        sistema.getReservasActuales();
-//
-        //actualizar reserva
-//        sistema.actualizarReserva("pepito@gmail.com","1998-01-27");
-
-        mostrarMenu(sistema);
+        showMenu(sistema);
     }
 
-    public static void mostrarMenu(SistemaReservas sistema){
+    public static void showMenu(SystemReservations systemReservations){
 
         System.out.println("*** Menú principal ***");
         System.out.println("1. Buscar alojamiento");
@@ -184,152 +106,157 @@ public class Main {
         System.out.println("3. Realizar reserva");
         System.out.println("4. Ver mis reservas");
         System.out.println("5. Actualizar Reserva");
+        System.out.println("6. Salir");
         Scanner scanner = new Scanner(System.in);
-        int opcion = scanner.nextInt();
+        int option = scanner.nextInt();
         scanner.nextLine();
 
-        switch (opcion){
-            case 1:
-                try {
-                    System.out.print("Ingrese la ubicación del alojamiento (ejemplo: Bogotá): ");
-                    String ubicacion = scanner.nextLine();
-                    System.out.print("Ingrese el tipo de alojamiento (ejemplo: Hotel): ");
-                    String tipoAlojamiento = scanner.nextLine();
-                    System.out.print("Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
-                    String fechaInicioStr = scanner.nextLine();
-                    LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
-                    String fechaFinStr = scanner.nextLine();
-                    LocalDate fechaFin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese el número de adultos: ");
-                    int numAdultos = scanner.nextInt();
-                    System.out.print("Ingrese el número de niños: ");
-                    int numNinos = scanner.nextInt();
-                    System.out.print("Ingrese el número de habitaciones: ");
-                    int numHabitaciones = scanner.nextInt();
-                    sistema.buscarAlojamientos(ubicacion, tipoAlojamiento, fechaInicio, fechaFin, numAdultos, numNinos, numHabitaciones);
-                    scanner.nextLine();
-                } catch (Exception e) {
-                    System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
-                }
-                mostrarMenu(sistema);
-                break;
-            case 2:
-                try {
-                    System.out.print("Ingrese el nombre del alojamiento: ");
-                    String alojamiento = scanner.nextLine();
-                    System.out.print("Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
-                    String fechaInicioStr = scanner.next();
-                    LocalDate fecha_Inicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
-                    String fechaFinStr = scanner.next();
-                    LocalDate fecha_Fin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese el número de habitaciones que desea reservar: ");
-                    int numHabitaciones = scanner.nextInt();
-                    System.out.print("Ingrese el número de adultos: ");
-                    int numAdultos = scanner.nextInt();
-                    System.out.print("Ingrese el número de niños: ");
-                    int numNinos = scanner.nextInt();
-                    sistema.confirmarHabitaciones(alojamiento, fecha_Inicio, fecha_Fin, numHabitaciones, numAdultos, numNinos);
-                    scanner.nextLine();
-                }catch (Exception e){
-                    System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
-                    System.out.println(e.getMessage());
-                }
-                mostrarMenu(sistema);
-                break;
-            case 3:
-                try {
-                    System.out.print("Ingrese su nombre: ");
-                    String nombre = scanner.nextLine();
-                    System.out.print("Ingrese su apellido: ");
-                    String apellido = scanner.nextLine();
-                    System.out.print("Ingrese su correo: ");
-                    String email = scanner.nextLine();
-                    System.out.print("Ingrese su nacionalidad: ");
-                    String nacionalidad = scanner.nextLine();
-                    System.out.print("Ingrese su telefono: ");
-                    String telefono = scanner.nextLine();
-                    System.out.print("Ingrese su fecha de nacimiento (formato: yyyy-MM-dd): ");
-                    String fecha = scanner.nextLine();
-                    LocalDate fechaNacimiento = LocalDate.parse(fecha, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese la hora aproximada de llegada (HH:MM): ");
-                    String hora = scanner.nextLine();
-                    LocalTime horaLlegada = LocalTime.parse(hora, DateTimeFormatter.ISO_LOCAL_TIME);
-                    Persona cliente = new Persona(nombre, apellido,email,nacionalidad,telefono,horaLlegada,fechaNacimiento);
-                    System.out.print("Ingrese el nombre del alojamiento: ");
-                    String nombreAlojamiento = scanner.nextLine();
-                    Alojamiento alojamiento = sistema.obtenerAlojamientoPorNombre(nombreAlojamiento);
-                    if (alojamiento == null) {
-                        System.out.println("El alojamiento ingresado no existe.");
-                        return;
-                    }
-                    System.out.print("Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
-                    String fechaInicioStr = scanner.nextLine();
-                    LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
-                    String fechaFinStr = scanner.nextLine();
-                    LocalDate fechaFin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                    System.out.print("Ingrese el número de adultos: ");
-                    int numAdultos = scanner.nextInt();
-                    System.out.print("Ingrese el número de niños: ");
-                    int numNiños = scanner.nextInt();
-                    if(alojamiento instanceof Hotel){
-                        System.out.print("Ingrese el nombre de la habitación: ");
-                        scanner.nextLine();
-                        String nombreHabitacion = scanner.nextLine();
-                        Habitacion habitacion = sistema.obtenerHabitacionPorNombre(nombreHabitacion);
-                        if (habitacion == null) {
-                            System.out.println("La habitación seleccionada no existe.");
-                            return;
-                        }
-                        sistema.realizarReserva(alojamiento, fechaInicio, fechaFin, numAdultos, numNiños, cliente, habitacion);
-                        mostrarMenu(sistema);
-                        break;
-                    }else if(alojamiento instanceof DiaDeSol){
-                        System.out.print("Ingrese el nombre de la actividad: ");
-                        scanner.nextLine();
-                        String nombreActividad = scanner.nextLine();
-                        Actividad actividad = sistema.obtenerActividadPorNombre(nombreActividad);
-                        if (actividad == null) {
-                            System.out.println("La actividad seleccionada no existe.");
-                            return;
-                        }
-                        sistema.realizarReserva(alojamiento, fechaInicio, fechaFin, numAdultos, numNiños, cliente, actividad);
-                        mostrarMenu(sistema);
-                        break;
-                    }else if((alojamiento instanceof Apartamento) || (alojamiento instanceof Finca)) {
-                        sistema.realizarReserva(alojamiento, fechaInicio, fechaFin, numAdultos, numNiños, cliente);
-                        mostrarMenu(sistema);
-                        break;
-                    }
-                    scanner.nextLine();
-                } catch (Exception e) {
-                    System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
-                    e.printStackTrace();
-                }
-            case 4:
-                System.out.print("Ingrese su correo: ");
-                String email = scanner.nextLine();
-                for (Reserva reserva : sistema.getReservasActualesPorEmailCliente(email)){
-                    System.out.println(reserva.toString());
-                }
-                mostrarMenu(sistema);
-                break;
-            case 5:
-                System.out.print("Ingrese su correo: ");
-                String correo = scanner.nextLine();
-                System.out.print("Ingrese su fecha de nacimiento(formato: yyyy-MM-dd): ");
-                String fecha = scanner.nextLine();
-                LocalDate fechaNacimiento = LocalDate.parse(fecha, DateTimeFormatter.ISO_LOCAL_DATE);
-                sistema.actualizarReserva(correo,fecha);
-                mostrarMenu(sistema);
-                break;
-            default:
-                System.out.println("Opción no válida. Intenta de nuevo.");
-                mostrarMenu(sistema);
+        switch (option){
+            case 1 -> menuSearchAccommodation(systemReservations, scanner);
+            case 2 -> menuShowRooms(systemReservations, scanner);
+            case 3 -> menuMakeReservation(systemReservations, scanner);
+            case 4 -> menuShowReservations(systemReservations, scanner);
+            case 5 -> menuUpdateReserve(systemReservations, scanner);
+            case 6 -> System.out.println("Gracias por ultilizar el sistema");
+            default -> System.out.println("Opción no válida. Intenta de nuevo.");
         }
-        mostrarMenu(sistema);
+        if (option != 6) showMenu(systemReservations);
+    }
 
+    private static void menuMakeReservation(SystemReservations systemReservations, Scanner scanner) {
+        try {
+            Customer customer = captureCustomerData(scanner);
+            Accommodation accommodation = captureAccommodationData(systemReservations, scanner);
+            if (accommodation == null) return;
+            LocalDate startDate = captureDate(scanner, "Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
+            LocalDate endDate = captureDate(scanner, "Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
+            int numAdults = captureInteger("Ingrese el número de adultos: ", scanner);
+            int numChildren = captureInteger("Ingrese el número de niños: ", scanner);
+            processReserve(systemReservations, accommodation, scanner, startDate, endDate, numAdults, numChildren, customer);
+        } catch (Exception e) {
+            System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
+            e.printStackTrace();
+        }
+    }
+
+    private static void processReserve(SystemReservations systemReservations, Accommodation accommodation, Scanner scanner, LocalDate start, LocalDate end, int numAdults, int numChildren, Customer customer) {
+        if(systemReservations.isHotel(accommodation)){
+            processReserveHotel(systemReservations, accommodation, scanner, start, end, numAdults, numChildren, customer);
+        }else if(systemReservations.isDayOfSun(accommodation)){
+            processReserveDayOfSun(systemReservations, accommodation, scanner, start, end, customer);
+        }else if(systemReservations.isApartamentOrFarm(accommodation)) {
+            systemReservations.makeReservationApartmentFarm(accommodation, start, end, customer);
+        }
+    }
+
+    private static void processReserveDayOfSun(SystemReservations systemReservations, Accommodation accommodation, Scanner scanner, LocalDate start, LocalDate end, Customer customer) {
+        System.out.print("Ingrese el nombre de la actividad: ");
+        scanner.nextLine();
+        String activityName = scanner.nextLine();
+        Activity activity = systemReservations.getActivityByName(activityName);
+        if (activity == null) {
+            System.out.println("La actividad seleccionada no existe.");
+        }
+        systemReservations.makeReservationDayOfSun(accommodation, start, end, customer, activity);
+    }
+
+    private static void processReserveHotel(SystemReservations systemReservations, Accommodation accommodation, Scanner scanner, LocalDate start, LocalDate end, int numAdults, int numChildren, Customer customer) {
+        System.out.print("Ingrese el nombre de la habitación: ");
+        scanner.nextLine();
+        String roomName = scanner.nextLine();
+        Room room = systemReservations.getRoomByName(roomName);
+        if (room == null) {
+            System.out.println("La habitación seleccionada no existe.");
+        }
+        systemReservations.makeReservationHotel(accommodation, start, end, numAdults, numChildren, customer, room);
+    }
+
+    private static int captureInteger(String message, Scanner scanner) {
+        System.out.print(message);
+        return scanner.nextInt();
+    }
+
+    private static LocalDate captureDate(Scanner scanner, String message) {
+        System.out.print(message);
+        String dateStr = scanner.nextLine();
+        return LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    private static Accommodation captureAccommodationData(SystemReservations systemReservations, Scanner scanner) {
+        System.out.print("Ingrese el nombre del alojamiento: ");
+        String accommodationName = scanner.nextLine();
+        Accommodation accommodation = systemReservations.getAccommodationByName(accommodationName);
+        if (accommodation == null) {
+            System.out.println("El alojamiento ingresado no existe.");
+            return null;
+        }
+        return accommodation;
+    }
+
+    private static Customer captureCustomerData(Scanner scanner) {
+        System.out.print("Ingrese su nombre: ");
+        String name = scanner.nextLine();
+        System.out.print("Ingrese su apellido: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Ingrese su correo: ");
+        String email = scanner.nextLine();
+        System.out.print("Ingrese su nacionalidad: ");
+        String nationality = scanner.nextLine();
+        System.out.print("Ingrese su telefono: ");
+        String phone = scanner.nextLine();
+        LocalDate dateBirth = captureDate(scanner, "Ingrese su fecha de nacimiento (formato: yyyy-MM-dd): ");
+        System.out.print("Ingrese la hora aproximada de llegada (HH:MM): ");
+        String time = scanner.nextLine();
+        LocalTime timeArrival = LocalTime.parse(time, DateTimeFormatter.ISO_LOCAL_TIME);
+        return new Customer(name, lastName,email,nationality,phone,timeArrival,dateBirth);
+    }
+
+    private static void menuUpdateReserve(SystemReservations systemReservations, Scanner scanner) {
+        System.out.print("Ingrese su correo: ");
+        String email = scanner.nextLine();
+        LocalDate dateBirth = captureDate(scanner,"Ingrese su fecha de nacimiento(formato: yyyy-MM-dd): ");
+        systemReservations.formUpdateReservation(email,dateBirth);
+    }
+
+    private static void menuShowReservations(SystemReservations sys, Scanner scanner) {
+        System.out.print("Ingrese su correo: ");
+        String email = scanner.nextLine();
+        sys.getCurrentReservesByCustomerEmail(email).stream().forEach(System.out::println);
+        if(sys.getCurrentReservesByCustomerEmail(email).isEmpty()) System.out.println("Usted no cuenta con reservas actualmente.");;
+    }
+
+    private static void menuShowRooms(SystemReservations systemReservations, Scanner scanner) {
+        try {
+            System.out.print("Ingrese el nombre del alojamiento: ");
+            String accomodation = scanner.nextLine();
+            LocalDate dateStart = captureDate(scanner,"Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
+            LocalDate dateEnd = captureDate(scanner,"Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
+            int numRooms = captureInteger("Ingrese el número de habitaciones que desea reservar: ", scanner);
+            int numAdults = captureInteger("Ingrese el número de adultos: ", scanner);
+            int numChildren = captureInteger("Ingrese el número de niños: ", scanner);
+            systemReservations.confirmRooms(accomodation, dateStart, dateEnd, numRooms, numAdults, numChildren);
+            scanner.nextLine();
+        }catch (Exception e){
+            System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void menuSearchAccommodation(SystemReservations systemReservations, Scanner scanner) {
+        try {
+            System.out.print("Ingrese la ubicación del alojamiento (ejemplo: Bogotá): ");
+            String location = scanner.nextLine();
+            System.out.print("Ingrese el tipo de alojamiento (ejemplo: Hotel): ");
+            String accommodationType = scanner.nextLine();
+            LocalDate dateStart = captureDate(scanner,"Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
+            LocalDate dateEnd = captureDate(scanner,"Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
+            int numAdults = captureInteger("Ingrese el número de adultos: ", scanner);
+            int numChildren = captureInteger("Ingrese el número de niños: ", scanner);
+            int numRooms = captureInteger("Ingrese el número de habitaciones: ", scanner);
+            systemReservations.searchAccommodations(location, accommodationType, dateStart, dateEnd, numAdults, numChildren, numRooms);
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
+        }
     }
 }

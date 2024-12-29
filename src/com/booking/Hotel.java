@@ -1,45 +1,44 @@
 package com.booking;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hotel extends Alojamiento {
+public class Hotel extends Accommodation {
 
-    private List<Habitacion> habitaciones;
-    private List<Reserva> reservas;
+    private List<Room> rooms;
+    private List<Reservation> reservations;
 
-    public Hotel(String nombre, double calificacion, double precioNoche, String ciudad) {
-        super(nombre, calificacion, precioNoche, ciudad);
-        this.habitaciones = new ArrayList<>();
-        this.reservas = new ArrayList<>();
+    public Hotel(String name, Double rating, Double nightPrice, String city) {
+        super(name, rating, nightPrice, city);
+        this.rooms = new ArrayList<>();
+        this.reservations = new ArrayList<>();
     }
 
-    public void agregarHabitacion(Habitacion habitacion) {
-        this.habitaciones.add(habitacion);
+    public void addRoom(Room room) {
+        this.rooms.add(room);
     }
 
-    public void agregarReserva(Reserva reservaActual) {
-        reservas.add(reservaActual);
+    public void addReservation(Reservation reservationActual) {
+        reservations.add(reservationActual);
     }
 
-    public List<Habitacion> getHabitaciones() {
-        return habitaciones;
+    public List<Room> getRooms() {
+        return rooms;
     }
 
-    public List<Reserva> getReservas() {
-        return reservas;
+    public List<Reservation> getReservations() {
+        return reservations;
     }
 
     @Override
-    public String getTipo() {
+    public String getType() {
         return "Hotel";
     }
 
     @Override
-    public boolean habitacionExiste(Habitacion habitacion) {
-        return this.habitaciones.stream()
-                .anyMatch(h -> h.getNombre().equalsIgnoreCase(habitacion.getNombre()));
+    public boolean roomExists(Room room) {
+        return this.rooms.stream()
+                .anyMatch(h -> h.getName().equalsIgnoreCase(room.getName()));
     }
 
 }
