@@ -86,15 +86,6 @@ public class Main {
         sistema.addAccommodation(dayOfSun2P);
         sistema.addAccommodation(hotel1P);
 
-//        //reservas de alojamientos
-//        sistema.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room1);
-//        sistema.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room2);
-//        sistema.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room3);
-//        sistema.makeReservationApartmentFarm(farm1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
-//        sistema.makeReservationApartmentFarm(apartment1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
-//        sistema.makeReservationDayOfSun(dayOfSun1P, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1,actividades1); //dia de sol
-
-
         showMenu(sistema);
     }
 
@@ -128,13 +119,13 @@ public class Main {
             Customer customer = captureCustomerData(scanner);
             Accommodation accommodation = captureAccommodationData(systemReservations, scanner);
             if (accommodation == null) return;
-            LocalDate startDate = captureDate(scanner, "Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
-            LocalDate endDate = captureDate(scanner, "Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
-            int numAdults = captureInteger("Ingrese el número de adultos: ", scanner);
-            int numChildren = captureInteger("Ingrese el número de niños: ", scanner);
+            LocalDate startDate = captureDate(scanner, Messages.DATE_START_PROMPT);
+            LocalDate endDate = captureDate(scanner, Messages.DATE_END_PROMPT);
+            int numAdults = captureInteger(Messages.NUM_ADULTS_PROMPT, scanner);
+            int numChildren = captureInteger(Messages.NUM_CHILDREN_PROMPT, scanner);
             processReserve(systemReservations, accommodation, scanner, startDate, endDate, numAdults, numChildren, customer);
         } catch (Exception e) {
-            System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
+            System.out.println(Messages.DATA_ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -150,7 +141,7 @@ public class Main {
     }
 
     private static void processReserveDayOfSun(SystemReservations systemReservations, Accommodation accommodation, Scanner scanner, LocalDate start, LocalDate end, Customer customer) {
-        System.out.print("Ingrese el nombre de la actividad: ");
+        System.out.print(Messages.NAME_ACTIVITY_PROMPT);
         scanner.nextLine();
         String activityName = scanner.nextLine();
         Activity activity = systemReservations.getActivityByName(activityName);
@@ -161,7 +152,7 @@ public class Main {
     }
 
     private static void processReserveHotel(SystemReservations systemReservations, Accommodation accommodation, Scanner scanner, LocalDate start, LocalDate end, int numAdults, int numChildren, Customer customer) {
-        System.out.print("Ingrese el nombre de la habitación: ");
+        System.out.print(Messages.NAME_ROOMS_PROMPT);
         scanner.nextLine();
         String roomName = scanner.nextLine();
         Room room = systemReservations.getRoomByName(roomName);
@@ -183,7 +174,7 @@ public class Main {
     }
 
     private static Accommodation captureAccommodationData(SystemReservations systemReservations, Scanner scanner) {
-        System.out.print("Ingrese el nombre del alojamiento: ");
+        System.out.print(Messages.NAME_ACCOMMODATION_PROMPT);
         String accommodationName = scanner.nextLine();
         Accommodation accommodation = systemReservations.getAccommodationByName(accommodationName);
         if (accommodation == null) {
@@ -194,32 +185,32 @@ public class Main {
     }
 
     private static Customer captureCustomerData(Scanner scanner) {
-        System.out.print("Ingrese su nombre: ");
+        System.out.print(Messages.NAME_PROMPT);
         String name = scanner.nextLine();
-        System.out.print("Ingrese su apellido: ");
+        System.out.print(Messages.LAST_NAME_PROMPT);
         String lastName = scanner.nextLine();
-        System.out.print("Ingrese su correo: ");
+        System.out.print(Messages.EMAIL_PROMPT);
         String email = scanner.nextLine();
-        System.out.print("Ingrese su nacionalidad: ");
+        System.out.print(Messages.NATIONALITY_PROMPT);
         String nationality = scanner.nextLine();
-        System.out.print("Ingrese su telefono: ");
+        System.out.print(Messages.PHONE_PROMPT);
         String phone = scanner.nextLine();
-        LocalDate dateBirth = captureDate(scanner, "Ingrese su fecha de nacimiento (formato: yyyy-MM-dd): ");
-        System.out.print("Ingrese la hora aproximada de llegada (HH:MM): ");
+        LocalDate dateBirth = captureDate(scanner, Messages.BIRTH_DATE_PROMPT);
+        System.out.print(Messages.ARRIVAL_TIME_PROMPT);
         String time = scanner.nextLine();
         LocalTime timeArrival = LocalTime.parse(time, DateTimeFormatter.ISO_LOCAL_TIME);
         return new Customer(name, lastName,email,nationality,phone,timeArrival,dateBirth);
     }
 
     private static void menuUpdateReserve(SystemReservations systemReservations, Scanner scanner) {
-        System.out.print("Ingrese su correo: ");
+        System.out.print(Messages.EMAIL_PROMPT);
         String email = scanner.nextLine();
-        LocalDate dateBirth = captureDate(scanner,"Ingrese su fecha de nacimiento(formato: yyyy-MM-dd): ");
+        LocalDate dateBirth = captureDate(scanner,Messages.BIRTH_DATE_PROMPT);
         systemReservations.formUpdateReservation(email,dateBirth);
     }
 
     private static void menuShowReservations(SystemReservations sys, Scanner scanner) {
-        System.out.print("Ingrese su correo: ");
+        System.out.print(Messages.EMAIL_PROMPT);
         String email = scanner.nextLine();
         sys.getCurrentReservesByCustomerEmail(email).stream().forEach(System.out::println);
         if(sys.getCurrentReservesByCustomerEmail(email).isEmpty()) System.out.println("Usted no cuenta con reservas actualmente.");;
@@ -227,17 +218,17 @@ public class Main {
 
     private static void menuShowRooms(SystemReservations systemReservations, Scanner scanner) {
         try {
-            System.out.print("Ingrese el nombre del alojamiento: ");
+            System.out.print(Messages.NAME_ACCOMMODATION_PROMPT);
             String accomodation = scanner.nextLine();
-            LocalDate dateStart = captureDate(scanner,"Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
-            LocalDate dateEnd = captureDate(scanner,"Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
-            int numRooms = captureInteger("Ingrese el número de habitaciones que desea reservar: ", scanner);
-            int numAdults = captureInteger("Ingrese el número de adultos: ", scanner);
-            int numChildren = captureInteger("Ingrese el número de niños: ", scanner);
+            LocalDate dateStart = captureDate(scanner,Messages.DATE_START_PROMPT);
+            LocalDate dateEnd = captureDate(scanner,Messages.DATE_END_PROMPT);
+            int numRooms = captureInteger(Messages.NUM_ROOMS_PROMPT, scanner);
+            int numAdults = captureInteger(Messages.NUM_ADULTS_PROMPT, scanner);
+            int numChildren = captureInteger(Messages.NUM_CHILDREN_PROMPT, scanner);
             systemReservations.confirmRooms(accomodation, dateStart, dateEnd, numRooms, numAdults, numChildren);
             scanner.nextLine();
         }catch (Exception e){
-            System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
+            System.out.println(Messages.DATA_ERROR_MESSAGE);
             System.out.println(e.getMessage());
         }
     }
@@ -248,15 +239,15 @@ public class Main {
             String location = scanner.nextLine();
             System.out.print("Ingrese el tipo de alojamiento (ejemplo: Hotel): ");
             String accommodationType = scanner.nextLine();
-            LocalDate dateStart = captureDate(scanner,"Ingrese la fecha de inicio (formato: yyyy-MM-dd): ");
-            LocalDate dateEnd = captureDate(scanner,"Ingrese la fecha de fin (formato: yyyy-MM-dd): ");
-            int numAdults = captureInteger("Ingrese el número de adultos: ", scanner);
-            int numChildren = captureInteger("Ingrese el número de niños: ", scanner);
-            int numRooms = captureInteger("Ingrese el número de habitaciones: ", scanner);
+            LocalDate dateStart = captureDate(scanner,Messages.DATE_START_PROMPT);
+            LocalDate dateEnd = captureDate(scanner,Messages.DATE_END_PROMPT);
+            int numAdults = captureInteger(Messages.NUM_ADULTS_PROMPT, scanner);
+            int numChildren = captureInteger(Messages.NUM_CHILDREN_PROMPT, scanner);
+            int numRooms = captureInteger(Messages.NUM_ROOMS_PROMPT, scanner);
             systemReservations.searchAccommodations(location, accommodationType, dateStart, dateEnd, numAdults, numChildren, numRooms);
             scanner.nextLine();
         } catch (Exception e) {
-            System.out.println("Ocurrió un error al procesar los datos. Verifique la información ingresada.");
+            System.out.println(Messages.DATA_ERROR_MESSAGE);
         }
     }
 }

@@ -4,16 +4,15 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SystemReservations {
 
-    private List<Accommodation> accommodations;
-    private List<Reservation> reservations;
+    private final List<Accommodation> accommodations;
+    private final List<Reservation> reservations;
 
     public SystemReservations() {
-        this.accommodations = new ArrayList();
-        this.reservations = new ArrayList();
+        this.accommodations = new ArrayList<>();
+        this.reservations = new ArrayList<>();
     }
 
     public void addAccommodation(Accommodation accommodation) {
@@ -24,7 +23,7 @@ public class SystemReservations {
         return accommodations;
     }
 
-    public List<Accommodation> searchAccommodations(String city, String typeAccommodation, LocalDate start, LocalDate end,
+    public void searchAccommodations(String city, String typeAccommodation, LocalDate start, LocalDate end,
                                                 int numAdults, int numChildren, int numRooms) {
         List<Accommodation> accommodationsAvailable = new ArrayList<>();
         int daysStay =  calculateDaysStatement(start, end);
@@ -33,49 +32,50 @@ public class SystemReservations {
 
         for (Accommodation accommodation : accommodations) {
             if (isAccommodationInCity(city, typeAccommodation, accommodation)) {
-                getAccommodationsAndFeatures(start, end, numAdults, numChildren, numRooms, accommodation, daysStay, firstLast5days, lastDayMonth, accommodationsAvailable);
+                RoomParameters roomParams = new RoomParameters(start, end, numRooms, daysStay, accommodation,
+                        firstLast5days, lastDayMonth, accommodationsAvailable);
+                getAccommodationsAndFeatures(numAdults, numChildren, roomParams);
             }
         }
         if(accommodationsAvailable.isEmpty()){
             System.out.println("No existe ese tipo de alojamiento en la ciudad especificada.");
         }
-        return accommodationsAvailable;
     }
 
-    private void getAccommodationsAndFeatures(LocalDate start, LocalDate end, int numAdults, int numChildren, int numRooms, Accommodation accommodation, int daysStay, LocalDate firstLast5days, LocalDate lastDayMonth, List<Accommodation> accommodationsAvailable) {
-        if (verifyRoomsAvailable(accommodation, start, end, numRooms, numAdults, numChildren) && isHotel(accommodation)) {
-            getPricesHotel(start, end, numRooms, accommodation, daysStay, firstLast5days, lastDayMonth, accommodationsAvailable);
+    private void getAccommodationsAndFeatures(int numAdults, int numChildren, RoomParameters roomParams) {
+        if (verifyRoomsAvailable(roomParams.getAccommodation(), roomParams.getStart(), roomParams.getEnd(), roomParams.getNumRooms(), numAdults, numChildren) && isHotel(roomParams.getAccommodation())) {
+            getPricesHotel(roomParams);
         }
-        if (isDayOfSun(accommodation)){
-            getPricesDayOfSun(accommodation, accommodationsAvailable);
+        if (isDayOfSun(roomParams.getAccommodation())){
+            getPricesDayOfSun(roomParams.getAccommodation(), roomParams.getAccommodationsAvailable());
         }
-        if(isApartamentOrFarm(accommodation)){
-            getPricesApartmentFarm(start, end, numRooms, accommodation, daysStay, firstLast5days, lastDayMonth, accommodationsAvailable);
+        if(isApartamentOrFarm(roomParams.getAccommodation())){
+            getPricesApartmentFarm(roomParams);
         }
     }
 
-    private static void getPricesHotel(LocalDate start, LocalDate end, int numRooms, Accommodation accommodation, int daysStay, LocalDate firstLast5days, LocalDate lastDayMonth, List<Accommodation> accommodationsAvailable) {
-        Room MostEconomicalRoom = calculateRoomMostEconomic(accommodation);
+    private static void getPricesHotel(RoomParameters roomParams) {
+        Room mostEconomicalRoom = calculateRoomMostEconomic(roomParams.getAccommodation());
 
-        if (accommodationHaveRooms(accommodation)) return;
-        double priceBase = calculateBasePriceRoomMostEconomic(numRooms, MostEconomicalRoom, daysStay);
+        if (accommodationHaveRooms(roomParams.getAccommodation())) return;
+        double priceBase = calculateBasePriceRoomMostEconomic(roomParams.getNumRooms(), mostEconomicalRoom, roomParams.getDaysStay());
         double increase = 0;
         double discount = 0;
 
-        if(isDateBetween5and10(start, end)){
+        if(isDateBetween5and10(roomParams.getStart(), roomParams.getEnd())){
             discount = getDiscountDateBetween5and10(priceBase);
             priceBase *= 0.92;
         }
-        if(isDateBetween10and15(start, end)){
+        if(isDateBetween10and15(roomParams.getStart(), roomParams.getEnd())){
             increase = getIncrementDateBetween10and15(priceBase);
             priceBase *= 1.10;
         }
-        if(isDateBetweenLast5DaysMonth(start, end, firstLast5days, lastDayMonth)){
+        if(isDateBetweenLast5DaysMonth(roomParams.getStart(), roomParams.getEnd(), roomParams.getFirstLast5days(), roomParams.getLastDayMonth())){
             increase = getIncreaseDateBetweenLast5DaysMonth(priceBase);
             priceBase *= 1.15;
         }
-        accommodationsAvailable.add(accommodation);
-        showPriceAdjustmentsHotel(numRooms, accommodation, daysStay, MostEconomicalRoom, increase, discount, priceBase);
+        roomParams.getAccommodationsAvailable().add(roomParams.getAccommodation());
+        showPriceAdjustmentsHotel(roomParams.getNumRooms(), roomParams.getAccommodation(), roomParams.getDaysStay(), mostEconomicalRoom, increase, discount, priceBase);
     }
 
     private static double getIncreaseDateBetweenLast5DaysMonth(double priceBase) {
@@ -101,25 +101,25 @@ public class SystemReservations {
         );
     }
 
-    private static void getPricesApartmentFarm(LocalDate start, LocalDate end, int numRooms, Accommodation accommodation, int daysStay, LocalDate firstLast5days, LocalDate lastDayMonth, List<Accommodation> accommodationsAvailable) {
-        double priceBase = accommodation.getNightPrice() * daysStay;
+    private static void getPricesApartmentFarm(RoomParameters roomParams) {
+        double priceBase = roomParams.getAccommodation().getNightPrice() * roomParams.getDaysStay();
         double increase = 0;
         double discount = 0;
 
-        if(isDateBetween5and10(start, end)){
+        if(isDateBetween5and10(roomParams.getStart(), roomParams.getEnd())){
             discount = getDiscountDateBetween5and10(priceBase);
             priceBase *= 0.92;
         }
-        if(isDateBetween10and15(start, end)){
+        if(isDateBetween10and15(roomParams.getStart(), roomParams.getEnd())){
             increase = getIncrementDateBetween10and15(priceBase);
             priceBase *= 1.10;
         }
-        if(isDateBetweenLast5DaysMonth(start,end,firstLast5days,lastDayMonth)){
+        if(isDateBetweenLast5DaysMonth(roomParams.getStart(),roomParams.getEnd(),roomParams.getFirstLast5days(),roomParams.getLastDayMonth())){
             increase = getIncreaseDateBetweenLast5DaysMonth(priceBase);
             priceBase *= 1.15;
         }
-        showAdjustmentsPricesApartmentsFincas(numRooms, accommodation, daysStay, increase, discount, priceBase);
-        accommodationsAvailable.add(accommodation);
+        showAdjustmentsPricesApartmentsFincas(roomParams.getNumRooms(), roomParams.getAccommodation(), roomParams.getDaysStay(), increase, discount, priceBase);
+        roomParams.getAccommodationsAvailable().add(roomParams.getAccommodation());
     }
 
     private static void showAdjustmentsPricesApartmentsFincas(int numRooms, Accommodation accommodation, int daysStay, double increase, double discount, double priceBase) {
@@ -149,8 +149,8 @@ public class SystemReservations {
         System.out.println("\n");
     }
 
-    private static double calculateBasePriceRoomMostEconomic(int numRooms, Room MostEconomicalRoom, int daysStay) {
-        return MostEconomicalRoom.getNightPrice() * daysStay * numRooms;
+    private static double calculateBasePriceRoomMostEconomic(int numRooms, Room mostEconomicalRoom, int daysStay) {
+        return mostEconomicalRoom.getNightPrice() * daysStay * numRooms;
     }
 
     private static boolean accommodationHaveRooms(Accommodation accommodation) {
@@ -202,7 +202,7 @@ public class SystemReservations {
     }
 
     public void confirmRooms(String accommodationName, LocalDate start, LocalDate end, int numAdults, int numChildren, int numRooms){
-        List<Room> roomsAvailable = new ArrayList();
+        List<Room> roomsAvailable = new ArrayList<>();
         Accommodation accommodation = getAccommodationByName(accommodationName);
         for(Room room : accommodation.getRooms()){
             if(isRoomAvailable(accommodation,start,end,numAdults,numChildren,room,numRooms)){
@@ -228,7 +228,7 @@ public class SystemReservations {
             room.setQuantityAvailable(room.getQuantityAvailable() - 1);
             room.setStatusAvailability(false);
             reservations.add(newReservation);
-            System.out.println("Se ha realizado la reserva con éxito.");
+            System.out.println(Messages.SUCCESSFUL_RESERVATION);
         }else {
             System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
         }
@@ -237,7 +237,7 @@ public class SystemReservations {
     public void makeReservationDayOfSun(Accommodation accommodation, LocalDate start, LocalDate end, Customer customer, Activity activity) {
         Reservation newReservation = new Reservation(start,end, activity, customer, accommodation);
         reservations.add(newReservation);
-        System.out.println("Se ha realizado la reserva con éxito.");
+        System.out.println(Messages.SUCCESSFUL_RESERVATION);
     }
 
     public void makeReservationApartmentFarm(Accommodation accommodation, LocalDate start, LocalDate end, Customer customer) {
@@ -246,7 +246,7 @@ public class SystemReservations {
         reserved = isReserved(newReservation, reserved);
         if (!reserved && verifyAvailabilityApartmentFarm(accommodation, start, end)){
             reservations.add(newReservation);
-            System.out.println("Se ha realizado la reserva con éxito.");
+            System.out.println(Messages.SUCCESSFUL_RESERVATION);
         }else {
             System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
         }
@@ -268,7 +268,7 @@ public class SystemReservations {
             if(getCurrentReservesByCustomer(customer).isEmpty()){
                 System.out.println("El cliente no posee reservas actualmente.");
             }
-            getCurrentReservesByCustomerEmail(email).stream().forEach(System.out::println);
+            getCurrentReservesByCustomerEmail(email).forEach(System.out::println);
             System.out.println("¿Cómo desea actualizar su reserva? (Ingrese una opción)");
             System.out.println("1. Cambio de habitación");
             System.out.println("2. Cambio de alojamiento");
@@ -305,9 +305,8 @@ public class SystemReservations {
         Room roomActual = reservationSelected.getRoom();
         Accommodation accommodation = reservationsCustomer.getFirst().getAccommodation();
         List<Room> roomsAvailable = showOtherRoomsAvailableAtAccommodation(accommodation, roomActual);
-        if (roomsAvailable == null) return;
         showRoomsAndFeatures(roomsAvailable);
-        selectNewRoomChange(customer, scanner, roomsAvailable, reservationSelected, roomActual);
+        selectNewRoomChange(scanner, roomsAvailable, reservationSelected, roomActual);
     }
 
     private static Integer selectRoomChange(Scanner scanner, List<Reservation> reservationsCustomer) {
@@ -321,17 +320,15 @@ public class SystemReservations {
         return option;
     }
 
-    private void selectNewRoomChange(Customer customer, Scanner scanner, List<Room> roomsAvailable, Reservation reservationSelected, Room roomActual) {
+    private void selectNewRoomChange(Scanner scanner, List<Room> roomsAvailable, Reservation reservationSelected, Room roomActual) {
         System.out.println("Selecciona el número de la nueva habitación:");
         int newRoomOption = scanner.nextInt();
         scanner.nextLine();
-
         if (newRoomOption < 1 || newRoomOption > roomsAvailable.size()) {
             System.out.println("Opción inválida.");
             return;
         }
-
-        changeRoom(customer, roomsAvailable, newRoomOption, reservationSelected, roomActual);
+        changeRoom(roomsAvailable, newRoomOption, reservationSelected, roomActual);
     }
 
     private static void showRoomsAndFeatures(List<Room> roomsAvailable) {
@@ -348,16 +345,15 @@ public class SystemReservations {
         System.out.println("Estas son otras habitaciones disponibles en " + accommodation.getName() + ":");
         List<Room> roomsAvailable = accommodation.getRooms().stream()
                 .filter(h -> h.isStatusAvailability() && !h.equals(roomActual))
-                .collect(Collectors.toList());
-
+                .toList();
         if (roomsAvailable.isEmpty()) {
             System.out.println("No hay más habitaciones disponibles en este alojamiento.");
-            return null;
+            return Collections.emptyList();
         }
         return roomsAvailable;
     }
 
-    private void changeRoom(Customer cliente, List<Room> roomsAvailable, int newOptionRoom, Reservation reservationSelected, Room roomActual) {
+    private void changeRoom(List<Room> roomsAvailable, int newOptionRoom, Reservation reservationSelected, Room roomActual) {
         Room newRoom = roomsAvailable.get(newOptionRoom - 1);
 
         roomActual.setQuantityAvailable(roomActual.getQuantityAvailable() + 1);
@@ -386,18 +382,18 @@ public class SystemReservations {
     public void changeAccommodation(Customer customer) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Ingrese la fecha de inicio (formato YYYY-MM-DD): ");
+        System.out.print(Messages.DATE_START_PROMPT);
         String startStr = scanner.nextLine();
         LocalDate start = LocalDate.parse(startStr);
-        System.out.print("Ingrese la fecha de fin (formato YYYY-MM-DD): ");
+        System.out.print(Messages.DATE_END_PROMPT);
         String endStr = scanner.nextLine();
         LocalDate end = LocalDate.parse(endStr);
-        System.out.print("Ingrese el nombre del alojamiento: ");
+        System.out.print(Messages.NAME_ACCOMMODATION_PROMPT);
         String accommodationName = scanner.nextLine();
 
         Accommodation accommodation = getAccommodationByName(accommodationName);
         if(isHotel(accommodation)){
-            System.out.print("Ingrese el nombre de la habitación: ");
+            System.out.print(Messages.NAME_ROOMS_PROMPT);
             String roomName = scanner.nextLine();
             Reservation reservationActual = getReservaHotel(customer, roomName, accommodationName,start,end);
             if (reservationActual == null) {
@@ -491,19 +487,14 @@ public class SystemReservations {
     }
 
     private void isApartmentFarmAvailable(Accommodation accommodation, LocalDate start, LocalDate end, Reservation reservation) {
-        if (isApartamentOrFarm(accommodation)) {
-            if (reservation.getAccommodation().equals(accommodation)){
+        if (isApartamentOrFarm(accommodation) && reservation.getAccommodation().equals(accommodation)){
                 isDateAvailable(start, end, reservation);
-            }
         }
     }
 
     private boolean isDateAvailable(LocalDate start, LocalDate end, Reservation reservation) {
-        if(isStartDateInMedium(start, reservation) || isEndDateInMedium(end, reservation)
-            || isDateBeforeStartAndAfterEnd(start, end, reservation) || isDateAlreadyRegistered(start, end, reservation)){
-            return false;
-        }
-        return true;
+        return !isStartDateInMedium(start, reservation) && !isEndDateInMedium(end, reservation)
+                && !isDateBeforeStartAndAfterEnd(start, end, reservation) && !isDateAlreadyRegistered(start, end, reservation);
     }
 
     private static boolean isDateAlreadyRegistered(LocalDate start, LocalDate end, Reservation reservation) {
@@ -559,19 +550,19 @@ public class SystemReservations {
         return reservations.stream()
                 .map(Reservation::getCustomer)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Reservation> getCurrentReservesByCustomer(Customer customer) {
         return reservations.stream()
                 .filter(reserva -> reserva.getCustomer().equals(customer))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Reservation> getCurrentReservesByCustomerEmail(String email) {
         return reservations.stream()
                 .filter(reservation -> reservation.getCustomer().getEmail().equalsIgnoreCase(email))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Customer authentication(String email, LocalDate dateBirth){
