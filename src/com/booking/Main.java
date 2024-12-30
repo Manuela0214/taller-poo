@@ -1,4 +1,9 @@
 package com.booking;
+import com.booking.services.*;
+import com.booking.utils.*;
+import com.booking.models.*;
+import com.booking.visitor.OccupancyReport;
+import com.booking.visitor.VisitorProcessor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,7 +13,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        SystemReservations sistema = new SystemReservations();
+        SystemReservations systemReservations = new SystemReservations();
 
         //----------------------------Clientes
         Customer cliente1 = new Customer("Pepito","Perez","pepito@gmail.com","Colombiana","3102254622",
@@ -71,22 +76,34 @@ public class Main {
 
         //----------------------------creación alojamientos en el sistema de reservas
         //Bogota
-        sistema.addAccommodation(hotel1B);
-        sistema.addAccommodation(hotel2B);
-        sistema.addAccommodation(hotel3B);
-        sistema.addAccommodation(apartment1B);
-        sistema.addAccommodation(apartment2B);
+        systemReservations.addAccommodation(hotel1B);
+        systemReservations.addAccommodation(hotel2B);
+        systemReservations.addAccommodation(hotel3B);
+        systemReservations.addAccommodation(apartment1B);
+        systemReservations.addAccommodation(apartment2B);
         //Medellin
-        sistema.addAccommodation(apartment1M);
-        sistema.addAccommodation(apartment2M);
-        sistema.addAccommodation(apartment3M);
-        sistema.addAccommodation(farm1M);
+        systemReservations.addAccommodation(apartment1M);
+        systemReservations.addAccommodation(apartment2M);
+        systemReservations.addAccommodation(apartment3M);
+        systemReservations.addAccommodation(farm1M);
         //Pereira
-        sistema.addAccommodation(dayOfSun1P);
-        sistema.addAccommodation(dayOfSun2P);
-        sistema.addAccommodation(hotel1P);
+        systemReservations.addAccommodation(dayOfSun1P);
+        systemReservations.addAccommodation(dayOfSun2P);
+        systemReservations.addAccommodation(hotel1P);
 
-        showMenu(sistema);
+        systemReservations.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room2);
+        systemReservations.makeReservationHotel(hotel2B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room5);
+        systemReservations.makeReservationHotel(hotel2B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room1);
+        systemReservations.makeReservationHotel(hotel2B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room4);
+        systemReservations.makeReservationApartmentFarm(farm1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
+        systemReservations.makeReservationApartmentFarm(apartment1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
+        systemReservations.makeReservationDayOfSun(dayOfSun1P, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1,actividades1);
+
+        OccupancyReport visitor = new OccupancyReport(systemReservations);
+        VisitorProcessor processor = new VisitorProcessor();
+        processor.processVisitors(systemReservations.getAccommodations(), visitor);
+
+//        showMenu(systemReservations);
     }
 
     public static void showMenu(SystemReservations systemReservations){

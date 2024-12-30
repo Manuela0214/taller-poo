@@ -1,4 +1,6 @@
-package com.booking;
+package com.booking.models;
+
+import com.booking.visitor.ReportVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,4 +84,6 @@ public abstract class Accommodation {
                 ", ciudad='" + city + '\'' +
                 '}';
     }
+
+    public abstract void acceptVisitor(ReportVisitor visitor);
 }

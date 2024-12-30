@@ -1,4 +1,4 @@
-package com.booking;
+package com.booking.utils;
 
 public class Messages {
     public static final String DATE_START_PROMPT = "Ingrese la fecha de inicio (formato: yyyy-MM-dd): ";

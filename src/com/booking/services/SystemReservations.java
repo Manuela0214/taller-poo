@@ -1,4 +1,9 @@
-package com.booking;
+package com.booking.services;
+
+import com.booking.models.Reservation;
+import com.booking.utils.RoomParameters;
+import com.booking.models.*;
+import com.booking.utils.Messages;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -23,8 +28,14 @@ public class SystemReservations {
         return accommodations;
     }
 
+    public int getReservationCountByAccommodation(Accommodation accommodation) {
+        return (int) reservations.stream()
+                .filter(reservation -> reservation.getAccommodation().equals(accommodation))
+                .count();
+    }
+
     public void searchAccommodations(String city, String typeAccommodation, LocalDate start, LocalDate end,
-                                                int numAdults, int numChildren, int numRooms) {
+                                     int numAdults, int numChildren, int numRooms) {
         List<Accommodation> accommodationsAvailable = new ArrayList<>();
         int daysStay =  calculateDaysStatement(start, end);
         LocalDate lastDayMonth = start.with(TemporalAdjusters.lastDayOfMonth());
@@ -71,14 +82,14 @@ public class SystemReservations {
             priceBase *= 1.10;
         }
         if(isDateBetweenLast5DaysMonth(roomParams.getStart(), roomParams.getEnd(), roomParams.getFirstLast5days(), roomParams.getLastDayMonth())){
-            increase = getIncreaseDateBetweenLast5DaysMonth(priceBase);
+            increase = getIncrementDateBetweenLast5DaysMonth(priceBase);
             priceBase *= 1.15;
         }
         roomParams.getAccommodationsAvailable().add(roomParams.getAccommodation());
         showPriceAdjustmentsHotel(roomParams.getNumRooms(), roomParams.getAccommodation(), roomParams.getDaysStay(), mostEconomicalRoom, increase, discount, priceBase);
     }
 
-    private static double getIncreaseDateBetweenLast5DaysMonth(double priceBase) {
+    private static double getIncrementDateBetweenLast5DaysMonth(double priceBase) {
         return priceBase * 0.15;
     }
 
@@ -115,7 +126,7 @@ public class SystemReservations {
             priceBase *= 1.10;
         }
         if(isDateBetweenLast5DaysMonth(roomParams.getStart(),roomParams.getEnd(),roomParams.getFirstLast5days(),roomParams.getLastDayMonth())){
-            increase = getIncreaseDateBetweenLast5DaysMonth(priceBase);
+            increase = getIncrementDateBetweenLast5DaysMonth(priceBase);
             priceBase *= 1.15;
         }
         showAdjustmentsPricesApartmentsFincas(roomParams.getNumRooms(), roomParams.getAccommodation(), roomParams.getDaysStay(), increase, discount, priceBase);

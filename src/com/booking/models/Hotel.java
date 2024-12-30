@@ -1,4 +1,6 @@
-package com.booking;
+package com.booking.models;
+
+import com.booking.visitor.ReportVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,4 +43,8 @@ public class Hotel extends Accommodation {
                 .anyMatch(h -> h.getName().equalsIgnoreCase(room.getName()));
     }
 
+    @Override
+    public void acceptVisitor(ReportVisitor visitor) {
+        visitor.visit(this);
+    }
 }
