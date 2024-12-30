@@ -1,4 +1,6 @@
-package com.booking;
+package com.booking.models;
+
+import com.booking.visitor.ReportVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +8,16 @@ import java.util.List;
 public class DayOfSun extends Accommodation {
 
     List<Activity> activities;
+    private List<Reservation> reservations;
 
     public DayOfSun(String name, Double rating, Double nightPrice, String city) {
         super(name, rating, nightPrice, city);
         this.activities = new ArrayList<>();
+        this.reservations = new ArrayList<>();
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
     }
 
     @Override
@@ -39,5 +47,10 @@ public class DayOfSun extends Accommodation {
                 .filter(activity -> activity.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public void acceptVisitor(ReportVisitor visitor) {
+        visitor.visit(this);
     }
 }

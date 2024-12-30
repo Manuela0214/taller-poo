@@ -1,4 +1,6 @@
-package com.booking;
+package com.booking.utils;
+
+import com.booking.models.Accommodation;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.booking;
+package com.booking.models;
 
 public class Room {
 
@@ -53,24 +53,6 @@ public class Room {
     public void setCapacityMaximum(int capacityMaximum) {
         this.capacityMaximum = capacityMaximum;
     }
-
-//    public void disminuirDisponibilidad() {
-//        if (this.quantityAvailable > 0) {
-//            this.quantityAvailable--;
-//            if(this.quantityAvailable == 0){
-//                this.statusAvailability = false;
-//            }
-//        } else {
-//            System.out.println("No hay habitaciones disponibles");
-//        }
-//    }
-//
-//    public void aumentarDisponibilidad() {
-//        this.quantityAvailable++;
-//        if(this.quantityAvailable > 0 ){
-//            this.statusAvailability = true;
-//        }
-//    }
 
     @Override
     public String toString() {
