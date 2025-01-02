@@ -12,12 +12,20 @@ import java.util.*;
 
 public class SystemReservations {
 
+    private static SystemReservations instance;
     private final List<Accommodation> accommodations;
     private final List<Reservation> reservations;
 
     public SystemReservations() {
         this.accommodations = new ArrayList<>();
         this.reservations = new ArrayList<>();
+    }
+
+    public static SystemReservations getInstance() {
+        if (instance == null) {
+            instance = new SystemReservations();
+        }
+        return instance;
     }
 
     public void addAccommodation(Accommodation accommodation) {
