@@ -1,4 +1,5 @@
 package com.booking;
+import com.booking.repositories.*;
 import com.booking.services.*;
 import com.booking.utils.*;
 import com.booking.models.*;
@@ -8,105 +9,96 @@ import com.booking.visitor.VisitorProcessor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
-        SystemReservations systemReservations = new SystemReservations();
+        SystemReservations systemReservations = SystemReservations.getInstance();
 
-        //----------------------------Clientes
-        Customer cliente1 = new Customer("Pepito","Perez","pepito@gmail.com","Colombiana","3102254622",
-                LocalTime.of(13,30),
-                LocalDate.of(1998, 1, 27)
-        );
+        RoomRepository roomRepository = RoomRepository.getInstance();
+        ActivityRepository activityRepository = ActivityRepository.getInstance();
+        HotelRepository hotelRepository = HotelRepository.getInstance();
+        ApartmentRepository apartmentRepository = ApartmentRepository.getInstance();
+        FarmRepository farmRepository = FarmRepository.getInstance();
+        DayOfSunRepository dayOfSunRepository = DayOfSunRepository.getInstance();
 
-        //----------------------------Habitaciones
-        Room room1 = new Room("Habitación doble","2 camas dobles, Vista al mar, Aire acondicionado, Cafetera",130.0,5,4);
-        Room room2 = new Room("Habitación Sencilla","1 cama sencilla, Escritorio, WiFi gratuito, Baño privado",80.0,6,2);
-        Room room3 = new Room("Habitación Suite","Cama King, Jacuzzi, Vista panorámica, Minibar, TV de pantalla plana",200.0,3,2);
-        Room room4 = new Room("Habitación Triple","3 camas individuales, Balcón privado, Aire acondicionado, TV, Mini nevera",150.0,5,9);
-        Room room5 = new Room("Habitación Familiar","2 camas dobles, Sofá cama, Cocina completa, Baño privado, WiFi gratuito",180.0,6,12);
+        addRoomsToHotels(hotelRepository, roomRepository);
 
-        //----------------------------Actividades
-        Activity actividades1 = new Activity("Natación", true, 20.0);
-        Activity actividades2 = new Activity("Paseo en bote", true, 25.0);
-        Activity actividades3 = new Activity("Caminata", false, 15.0);
-        Activity actividades4 = new Activity("Ciclo paseo", true, 10.0);
-        Activity actividades5 = new Activity("Sendero ecológico", false, 30.0);
+        addActivitiesToDayOfSun(dayOfSunRepository, activityRepository);
 
-        //----------------------------Alojamientos
-        //Bogotá
-        Hotel hotel1B = new Hotel("Hotel Paraiso", 4.2, 100.0, "Bogota");
-        Hotel hotel2B = new Hotel("Hotel la Colina", 4.5, 110.0, "Bogota");
-        Hotel hotel3B = new Hotel("Hotel Guamal", 4.7, 114.0, "Bogota");
-        Apartment apartment1B = new Apartment("Torres Niza", 4.8, 120.0, "Bogota");
-        Apartment apartment2B = new Apartment("El Mirador", 4.1, 90.0, "Bogota");
-        //Medellin
-        Apartment apartment1M = new Apartment("Guaduales apartamentos",4.0, 95.0, "Medellin");
-        Apartment apartment2M = new Apartment("La Morada",4.3, 90.0, "Medellin");
-        Apartment apartment3M = new Apartment("Edificio La Montañita",4.7, 80.0, "Medellin");
-        Farm farm1M = new Farm("Finca la maria", 4.8, 120.0, "Medellin");
-        //Pereira
-        DayOfSun dayOfSun1P = new DayOfSun("La Rochela", 4.6, 50.0, "Pereira");
-        DayOfSun dayOfSun2P = new DayOfSun("Santagueda", 4.3, 45.0, "Pereira");
-        Hotel hotel1P = new Hotel("Hotel la Estacion", 4.7, 114.0, "Pereira");
+        addAccommodationsToSystemReservation(systemReservations, hotelRepository, apartmentRepository, farmRepository, dayOfSunRepository);
 
-        //----------------------------Creación de habitaciones y actividades
-        //Bogota
-        hotel1B.addRoom(room1);
-        hotel1B.addRoom(room2);
-        hotel1B.addRoom(room3);
-        hotel2B.addRoom(room4);
-        hotel2B.addRoom(room5);
-        hotel2B.addRoom(room1);
-        hotel3B.addRoom(room2);
-        hotel3B.addRoom(room3);
-        hotel3B.addRoom(room4);
-        hotel3B.addRoom(room5);
-        //Pereira
-        dayOfSun1P.addActivity(actividades1);
-        dayOfSun1P.addActivity(actividades2);
-        dayOfSun1P.addActivity(actividades3);
-        dayOfSun2P.addActivity(actividades4);
-        dayOfSun2P.addActivity(actividades5);
-        hotel1P.addRoom(room1);
-        hotel1P.addRoom(room3);
-        hotel1P.addRoom(room5);
 
-        //----------------------------creación alojamientos en el sistema de reservas
-        //Bogota
-        systemReservations.addAccommodation(hotel1B);
-        systemReservations.addAccommodation(hotel2B);
-        systemReservations.addAccommodation(hotel3B);
-        systemReservations.addAccommodation(apartment1B);
-        systemReservations.addAccommodation(apartment2B);
-        //Medellin
-        systemReservations.addAccommodation(apartment1M);
-        systemReservations.addAccommodation(apartment2M);
-        systemReservations.addAccommodation(apartment3M);
-        systemReservations.addAccommodation(farm1M);
-        //Pereira
-        systemReservations.addAccommodation(dayOfSun1P);
-        systemReservations.addAccommodation(dayOfSun2P);
-        systemReservations.addAccommodation(hotel1P);
+        showMenu(systemReservations, hotelRepository, farmRepository, apartmentRepository, dayOfSunRepository, roomRepository);
+    }
 
-        systemReservations.makeReservationHotel(hotel1B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room2);
-        systemReservations.makeReservationHotel(hotel2B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room5);
-        systemReservations.makeReservationHotel(hotel2B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room1);
-        systemReservations.makeReservationHotel(hotel2B, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29), 2,2,cliente1, room4);
-        systemReservations.makeReservationApartmentFarm(farm1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
-        systemReservations.makeReservationApartmentFarm(apartment1M, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1);
-        systemReservations.makeReservationDayOfSun(dayOfSun1P, LocalDate.of(2024, 12, 27), LocalDate.of(2024, 12, 29),cliente1,actividades1);
+    private static void getNumReservationsByAccomodation(SystemReservations systemReservations, HotelRepository hotelRepository, FarmRepository farmRepository, ApartmentRepository apartmentRepository, DayOfSunRepository dayOfSunRepository, RoomRepository roomRepository) {
+        makeReservations(systemReservations, hotelRepository, farmRepository, apartmentRepository, dayOfSunRepository, roomRepository);
 
         OccupancyReport visitor = new OccupancyReport(systemReservations);
         VisitorProcessor processor = new VisitorProcessor();
         processor.processVisitors(systemReservations.getAccommodations(), visitor);
-
-//        showMenu(systemReservations);
+        showMenu(systemReservations, hotelRepository, farmRepository, apartmentRepository, dayOfSunRepository, roomRepository);
     }
 
-    public static void showMenu(SystemReservations systemReservations){
+    private static void addActivitiesToDayOfSun(DayOfSunRepository dayOfSunRepository, ActivityRepository activityRepository) {
+        List<DayOfSun> dayOfSuns = dayOfSunRepository.getDayOfSuns();
+        List<Activity> activities = activityRepository.getActivities();
+
+        dayOfSuns.get(0).addActivity(activities.get(0));
+        dayOfSuns.get(0).addActivity(activities.get(1));
+        dayOfSuns.get(0).addActivity(activities.get(2));
+        dayOfSuns.get(1).addActivity(activities.get(3));
+        dayOfSuns.get(1).addActivity(activities.get(4));
+    }
+
+    private static void addRoomsToHotels(HotelRepository hotelRepository, RoomRepository roomRepository) {
+        List<Hotel> hotels = hotelRepository.getHotels();
+        List<Room> rooms = roomRepository.getRooms();
+
+        hotels.get(0).addRoom(rooms.get(0));
+        hotels.get(0).addRoom(rooms.get(1));
+        hotels.get(0).addRoom(rooms.get(2));
+        hotels.get(1).addRoom(rooms.get(3));
+        hotels.get(1).addRoom(rooms.get(4));
+        hotels.get(1).addRoom(rooms.get(0));
+        hotels.get(2).addRoom(rooms.get(1));
+        hotels.get(2).addRoom(rooms.get(2));
+        hotels.get(2).addRoom(rooms.get(3));
+        hotels.get(2).addRoom(rooms.get(4));
+        hotels.get(3).addRoom(rooms.get(0));
+        hotels.get(3).addRoom(rooms.get(2));
+        hotels.get(3).addRoom(rooms.get(4));
+    }
+
+    private static void addAccommodationsToSystemReservation(SystemReservations systemReservations, HotelRepository hotelRepository, ApartmentRepository apartmentRepository, FarmRepository farmRepository,DayOfSunRepository dayOfSunRepository) {
+        hotelRepository.getHotels().forEach(systemReservations::addAccommodation);
+        apartmentRepository.getApartments().forEach(systemReservations::addAccommodation);
+        farmRepository.getFarms().forEach(systemReservations::addAccommodation);
+        dayOfSunRepository.getDayOfSuns().forEach(systemReservations::addAccommodation);
+    }
+
+    private static void makeReservations(SystemReservations systemReservations, HotelRepository hotelRepository, FarmRepository farmRepository, ApartmentRepository apartmentRepository, DayOfSunRepository dayOfSunRepository, RoomRepository roomRepository) {
+        Customer cliente = new Customer("Pepito","Perez","pepito@gmail.com","Colombiana","3102254622",
+                LocalTime.of(13,30),
+                LocalDate.of(1998, 1, 27)
+        );
+        LocalDate dateStart = LocalDate.of(2024, 12, 27);
+        LocalDate dateEnd = LocalDate.of(2024, 12, 29);
+        systemReservations.makeReservationHotel(hotelRepository.getHotels().get(0),dateStart, dateEnd, 2, 2, cliente, roomRepository.getRooms().get(1));
+        systemReservations.makeReservationHotel(hotelRepository.getHotels().get(1), dateStart, dateEnd, 2, 2, cliente, roomRepository.getRooms().get(4));
+        systemReservations.makeReservationHotel(hotelRepository.getHotels().get(1), dateStart, dateEnd, 2, 2, cliente, roomRepository.getRooms().get(0));
+        systemReservations.makeReservationHotel(hotelRepository.getHotels().get(1), dateStart, dateEnd, 2, 2, cliente, roomRepository.getRooms().get(3));
+        systemReservations.makeReservationApartmentFarm(farmRepository.getFarms().get(0), dateStart, dateEnd, cliente);
+        systemReservations.makeReservationApartmentFarm(apartmentRepository.getApartments().get(0), dateStart, dateEnd, cliente);
+        systemReservations.makeReservationDayOfSun(dayOfSunRepository.getDayOfSuns().get(0), dateStart, dateEnd, cliente, ActivityRepository.getInstance().getActivities().get(0));
+    }
+
+
+
+    public static void showMenu(SystemReservations systemReservations, HotelRepository hotelRepository, FarmRepository farmRepository, ApartmentRepository apartmentRepository, DayOfSunRepository dayOfSunRepository, RoomRepository roomRepository) {
 
         System.out.println("*** Menú principal ***");
         System.out.println("1. Buscar alojamiento");
@@ -114,7 +106,8 @@ public class Main {
         System.out.println("3. Realizar reserva");
         System.out.println("4. Ver mis reservas");
         System.out.println("5. Actualizar Reserva");
-        System.out.println("6. Salir");
+        System.out.println("6. Ver número de reservas X alojamiento");  //aplicación patrón visitor
+        System.out.println("7. Salir");
         Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
         scanner.nextLine();
@@ -125,10 +118,11 @@ public class Main {
             case 3 -> menuMakeReservation(systemReservations, scanner);
             case 4 -> menuShowReservations(systemReservations, scanner);
             case 5 -> menuUpdateReserve(systemReservations, scanner);
-            case 6 -> System.out.println("Gracias por ultilizar el sistema");
+            case 6 -> getNumReservationsByAccomodation(systemReservations, hotelRepository, farmRepository, apartmentRepository, dayOfSunRepository, roomRepository);
+            case 7 -> System.out.println("Gracias por ultilizar el sistema");
             default -> System.out.println("Opción no válida. Intenta de nuevo.");
         }
-        if (option != 6) showMenu(systemReservations);
+        if (option != 6) showMenu(systemReservations, hotelRepository, farmRepository, apartmentRepository, dayOfSunRepository, roomRepository);
     }
 
     private static void menuMakeReservation(SystemReservations systemReservations, Scanner scanner) {
